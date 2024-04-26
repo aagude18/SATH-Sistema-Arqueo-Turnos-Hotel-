@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template # Render Template es para redireccionar las rutas a los template HTML
 
-app = Flask(__name__)
+app = Flask(__name__) # Inicia flask y lo almacena en una variable
 
 # Creating simple Routes 
 @app.route('/test')
