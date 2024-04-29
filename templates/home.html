@@ -2,71 +2,90 @@
 
 {% block content %}
 
-<div class="container mt-2">
-  <h0>Fecha Inicio</h0>
-  <div class="input-group date">
-    <input type="text" class="form-control" id="fecha_ingreso">
-    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-  </div>
-</div>
-<div class="container mt-2">
-  <h0>Salida Turno</h0>
-  <div class="input-group date">
-    <input type="text" class="form-control" id="fecha_salida">
-    <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-  </div>
-</div>
-<div class="container mt-2">
-  <select class="form-select" aria-label="Default select example">
-    <option selected>Jornada</option>
-    <option value="1">Día</option>
-    <option value="2">Tarde</option>
-    <option value="3">Noche</option>
-  </select>
-</div>
-<div class="container mt-2">
-  <select class="form-select" aria-label="Default select example">
-    <option selected>Nombre Turno que entrega</option>
-    <option value="1">Betty Berta</option>
-    <option value="2">Leisby Marrugo</option>
-    <option value="3">Sindry Umaña</option>
-  </select>
-</div>
-<div class="container mt-2">
-  <select class="form-select" aria-label="Default select example">
-    <option selected>Nombre Turno que recibe</option>
-    <option value="1">Betty Berta</option>
-    <option value="2">Leisby Marrugo</option>
-    <option value="3">Sindry Umaña</option>
-  </select>
-</div>
-<form>
-  <div class="container mt-2">
-    <label for="baseRecibida" class="form-label"><h6>Base Recibida</h6></label>
-    <input type="base" class="form-control" id="baseRecibida" aria-describedby="baseHelp">
-    <div id="baseHelp" class="display-6">Ingrese el valor que recibio del turno anterior.</div>
-  </div>
-  <div class="container mt-4">
-    <label for="ingresoEfectivo" class="form-label"><h6>Ingreso Habitaciones Efectivo</h6></label>
-    <input type="efectvo" class="form-control" id="ingresoEfectivo" aria-describedby="efectivoHelp">
-    <div id="efectivoHelp" class="display-6">Ingrese el valor recibido en efectivo x habitación.</div>
-  </div>
-  <div class="container mt-4">
-    <label for="ingresoDatafono" class="form-label"><h6>Ingreso Habitaciones Datafono</h6></label>
-    <input type="datafono" class="form-control" id="ingresoDatafono" aria-describedby="datafonoHelp">
-    <div id="datafonoHelp" class="display-6">Ingrese el pago recibido por datafono.</div>
-  </div>
-  <div class="container mt-4">
-    <label for="ingresoOtros" class="form-label"><h6>Ingreso Habitaciones Otros Medios</h6></label>
-    <input type="otros" class="form-control" id="ingresoOtros" aria-describedby="otrosHelp">
-    <div id="otrosHelp" class="display-6">Ingrese el pago recibido por otros medios.</div>
-  </div>
-  <div class="container mt-4">
-    <label for="gastosCaja" class="form-label"><h6>Gastos de Caja Menor </h6></label>
+<div class="container">
+  <div class="row">
+    <div class="col-lg-4">
+      <h6>Entrega turno:</h6> 
+      <select class="form-select" aria-label="Default select example">
+        <option selected></option>
+        <option value="1">Betty Berta</option>
+        <option value="2">Leisby Marrugo</option>
+        <option value="3">Sindry Umaña</option>
+      </select>
+    </div>
+    <div class="col-lg-4">
+      <h6>Recibe turno:</h6>
+      <select class="form-select" aria-label="Default select example">
+        <option selected></option>
+        <option value="1">Betty Berta</option>
+        <option value="2">Leisby Marrugo</option>
+        <option value="3">Sindry Umaña</option>
+      </select>
+    </div>
+    <div class="col-lg-4" >
+      <h6>Jornada:</h6> 
+      <select class="form-select" aria-label="Default select example">
+        <option selected></option>
+        <option value="1">Día</option>
+        <option value="2">Tarde</option>
+        <option value="3">Noche</option>
+      </select>
+    </div>
+  </div>  
+</div> 
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-4 mt-5">
+      <h6>Fecha Ingreso</h6> 
+      <div class="input-group date">
+        <input type="text" class="form-control" id="fecha_ingreso">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+      </div>
+    </div>
+    <div class="col-lg-4 mt-5">
+      <h6>Fecha Salida</h6> 
+      <div class="input-group date">
+        <input type="text" class="form-control" id="fecha_salida">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+      </div>
+    </div>
+    <div class="col-lg-4 mt-5">
+      <h6>Base Recibida</h6>
+      <input type="base" class="form-control" id="baseRecibida" aria-describedby="baseHelp">
+    </div>
+  </div>  
+</div> 
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-lg-4">
+      <h6>Ingreso Efectivo</h6>
+      <input type="efectvo" class="form-control" id="ingresoEfectivo" aria-describedby="efectivoHelp">
+      <div id="efectivoHelp" class="display-6">Ventas en efectivo.</div> 
+    </div>
+    <div class="col-lg-4">
+      <h6>Ingreso Datafono</h6>
+      <input type="datafono" class="form-control" id="ingresoDatafono" aria-describedby="datafonoHelp">
+      <div id="datafonoHelp" class="display-6">Ventas por datafono.</div>  
+    </div>
+    <div class="col-lg-4" >
+      <h6>Ingreso Otros Medios</h6>
+      <input type="otros" class="form-control" id="ingresoOtros" aria-describedby="otrosHelp">
+      <div id="otrosHelp" class="display-6">Ventas otros medios.</div>
+    </div>
+  </div>  
+</div> 
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-lg-4">
+      <h6>Gastos de Caja Menor </h6>
     <input type="gastos" class="form-control" id="gastosCaja" aria-describedby="gastosHelp">
-    <div id="gastosHelp" class="display-6">Ingrese el valor de los gastos realizados en el turno.</div>
-  </div>
-</form>
+    <div id="gastosHelp" class="display-6">Gastos realizados en el turno.</div>
+    </div>
+  </div>  
+</div> 
 <div class="container mt-5">
   <table class="table">
     <thead>
