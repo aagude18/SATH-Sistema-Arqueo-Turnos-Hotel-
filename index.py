@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for # Render Template es para redireccionar las rutas a los template HTML
 import os
 import src.database as db
+from datetime import datetime
 template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
 app = Flask(__name__) # Inicia flask y lo almacena en una variable
@@ -13,6 +14,13 @@ app = Flask(__name__) # Inicia flask y lo almacena en una variable
 #@app.route('/test/about/')
 #def about_test():
 #    return "About Page"
+
+def convertir_fecha(fecha_str):
+    try:
+        return datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
+    except ValueError as e:
+        print(f"Error al convertir la fecha: {e}")
+        return None
 
 # Routes to Render Something
 @app.route('/')
@@ -74,6 +82,27 @@ def enlaces():
 @app.route('/homee', strict_slashes=False)
 def homee():
     return render_template("homee.html")
+
+#Nuevas Rutas
+@app.route('/user2', methods=['POST'])
+def addUser2():
+    fecha_inicio = request.form['FechaIn']
+    fecha_fin = request.form['FechaOut']
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    if fecha_inicio and fecha_fin and turno and empleado:
+        # Convertir las fechas al formato YYYY-MM-DD
+        fecha_inicio_convertida = convertir_fecha(fecha_inicio)
+        fecha_fin_convertida = convertir_fecha(fecha_fin)
+        if fecha_inicio_convertida is None or fecha_fin_convertida is None:
+            return "Error en la conversión de fechas", 400
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado) VALUES (%s, %s, %s, %s)"
+        data = (fecha_inicio_convertida, fecha_fin_convertida, turno, empleado)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
 
 # Make sure this we are executing this file
 if __name__ == '__main__':
