@@ -71,6 +71,10 @@ def edit(id):
 def enlaces():
     return render_template("enlaces.html")
 
+@app.route('/homee', strict_slashes=False)
+def homee():
+    return render_template("homee.html")
+
 # Make sure this we are executing this file
 if __name__ == '__main__':
     app.run(debug=True)
