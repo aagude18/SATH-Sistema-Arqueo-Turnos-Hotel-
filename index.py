@@ -90,19 +90,26 @@ def addUser2():
     fecha_fin = request.form['FechaOut']
     turno = request.form['Turno']
     empleado = request.form['Empleado']
-    if fecha_inicio and fecha_fin and turno and empleado:
+    recibido = request.form['Recibido']
+    efectivo = request.form['Efectivo']
+    datafono = request.form['Datafono']
+    otros = request.form['OtrosMedios']
+    entregado = request.form['Entregado']
+    entregadoM = request.form['EntregadoM']
+    gastos = request.form['Gastos']
+    observacion = request.form['Observacion']
+    if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos and observacion:
         # Convertir las fechas al formato YYYY-MM-DD
         fecha_inicio_convertida = convertir_fecha(fecha_inicio)
         fecha_fin_convertida = convertir_fecha(fecha_fin)
         if fecha_inicio_convertida is None or fecha_fin_convertida is None:
             return "Error en la conversión de fechas", 400
         cursor = db.mydb.cursor()
-        sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado) VALUES (%s, %s, %s, %s)"
-        data = (fecha_inicio_convertida, fecha_fin_convertida, turno, empleado)
+        sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        data = (fecha_inicio_convertida, fecha_fin_convertida, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
         cursor.execute(sql, data)
         db.mydb.commit()
     return redirect(url_for('home'))
-
 
 # Make sure this we are executing this file
 if __name__ == '__main__':
