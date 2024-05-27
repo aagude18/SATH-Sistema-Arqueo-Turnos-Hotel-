@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for # Render Template es para redireccionar las rutas a los template HTML
+from flask import Flask, render_template, request, redirect, url_for# Render Template es para redireccionar las rutas a los template HTML
 import os
 import src.database as db
 from datetime import datetime
@@ -26,7 +26,7 @@ def convertir_fecha(fecha_str):
 @app.route('/')
 def home():
     cursor = db.mydb.cursor()
-    cursor.execute("SELECT * FROM users")
+    cursor.execute("SELECT * FROM arqueo")
     myresult = cursor.fetchall()
     #Convertir a Diccionario
     insertObject = []
@@ -54,7 +54,7 @@ def addUser():
 @app.route('/delete/<string:id>')
 def delete(id):
     cursor = db.mydb.cursor()
-    sql = "DELETE FROM users WHERE id=%s"
+    sql = "DELETE FROM arqueo WHERE id=%s"
     data = (id,)
     cursor.execute(sql, data)
     db.mydb.commit()
@@ -64,13 +64,20 @@ def delete(id):
 #Ruta Para Eliminar
 @app.route('/edit/<string:id>', methods=['POST'])
 def edit(id):
-    username = request.form['Username']
-    name = request.form['Name']
-    password = request.form['Password']
-    if username and name and password:
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    recibido = request.form['Recibido']
+    efectivo = request.form['Efectivo']
+    datafono = request.form['Datafono']
+    otros = request.form['OtrosMedios']
+    entregado = request.form['Entregado']
+    entregadoM = request.form['EntregadoM']
+    gastos = request.form['Gastos']
+
+    if empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
         cursor = db.mydb.cursor()
-        sql = "UPDATE users SET Username =%s, Firstname =%s, Passw =%s WHERE Id =%s"
-        data = (username, name, password, id)
+        sql = "UPDATE arqueo SET turno_cod =%s, empleado =%s, base_recibida =%s, efectivo =%s, datafono =%s, otros =%s, gastos =%s, base_entregada =%s, entrega_caja_m =%s WHERE Id =%s"
+        data = (turno, empleado, recibido, efectivo, datafono, otros, gastos, entregado, entregadoM, id)
         cursor.execute(sql, data)
         db.mydb.commit()
     return redirect(url_for('home'))

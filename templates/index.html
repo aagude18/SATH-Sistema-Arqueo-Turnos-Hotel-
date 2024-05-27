@@ -13,18 +13,18 @@
                             <div class="input-group date">
                                 <input type="text" class="form-control mb-3" id="fecha_ingreso" name="FechaIn" required>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                              </div>
+                            </div>
                         </div>
                         <div class="col">
                             <label>Fecha Fin de Turno</label>
                             <div class="input-group date">
                                 <input type="text" class="form-control mb-3" id="fecha_salida" name="FechaOut" required>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                              </div>
+                            </div>
                         </div>
                         <div class="col">
                             <label>Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno">
+                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Codigo del Turno" required>
                         </div>
                         <div class="col">
                             <label>Empleado</label>
@@ -33,70 +33,49 @@
                                 <option value="Betty Berta">Betty Berta</option>
                                 <option value="Leisby Marrugo">Leisby Marrugo</option>
                                 <option value="Sindry Umaña">Sindry Umaña</option>
-                              </select>
+                            </select>
                         </div>
                         <div class="col">
                             <label>Base Recibida</label>
-                            <input type="text" class="form-control mb-3" name="Recibido">
+                            <input type="text" class="form-control mb-3" name="Recibido" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
                             <label>Ingreso Efectivo</label>
-                            <input type="text" class="form-control mb-3" name="Efectivo">
+                            <input type="text" class="form-control mb-3" name="Efectivo" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Ingreso Datafono</label>
-                            <input type="text" class="form-control mb-3" name="Datafono">
+                            <input type="text" class="form-control mb-3" name="Datafono" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Ingreso Otros Medios</label>
-                            <input type="text" class="form-control mb-3" name="OtrosMedios">
+                            <input type="text" class="form-control mb-3" name="OtrosMedios" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
                             <label>Base Entregada</label>
-                            <input type="text" class="form-control mb-3" name="Entregado">
+                            <input type="text" class="form-control mb-3" name="Entregado" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Entrega a Caja Mayor</label>
-                            <input type="text" class="form-control mb-3" name="EntregadoM">
+                            <input type="text" class="form-control mb-3" name="EntregadoM" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Gastos de Caja</label>
-                            <input type="text" class="form-control mb-3" name="Gastos">
+                            <input type="text" class="form-control mb-3" name="Gastos" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="container mt-4">
                             <div class="col-lg-8">
-                              <div class="form-group">
-                                <label for="comment">Observaciones:</label>
+                                <div class="form-group">
+                                    <label for="comment">Observaciones:</label>
                                 <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
-                              </div>
+                                </div>
                             </div>
-                          </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save</button>
-                        </div>
-                    </div>
-                </form>
-
-                <!--SEHUNDO FORMULARIO-->
-                <form action="/user" method="POST">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label>Username</label>
-                            <input type="text" class="form-control mb-3" name="Username">
-                        </div>
-                        <div class="col">
-                            <label>Name</label>
-                            <input type="text" class="form-control mb-3" name="Name">
-                        </div>
-                        <div class="col">
-                            <label>Password</label>
-                            <input type="text" class="form-control mb-3" name="Password">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Save</button>
@@ -104,99 +83,119 @@
                         </div>
                     </div>
                 </form>
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...
-          <!-- TABLA -->
-          <table class="table table-bordered">
-            <thead>
-                <th scope="col">#</th>
-                <th scope="col">Username</th>
-                <th scope="col">Name</th>
-                <th scope="col">Password</th>
-            </thead>
-        <tbody>
-            {% for d in data %}
-                <tr>
-                    <td>{{d.Id}}</td>
-                    <td>{{d.Username}}</td>
-                    <td>{{d.Firstname}}</td>
-                    <td>{{d.Passw}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>    
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  
 
-                <!-- TABLA >
-                <table class="table table-bordered">
+                <!-- Modal -->
+                <div class="modal fade modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- TABLA -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <th scope="col">Turno</th>
+                                        <th scope="col">Empleado</th>
+                                        <th scope="col">Base Recibida</th>
+                                        <th scope="col">Base Entregada</th>
+                                        <th scope="col">Entrega Admin</th>
+                                    </thead>
+                                    <tbody>
+                                    {% for d in data %}
+                                        <tr>
+                                            <td>{{d.turno_cod}}</td>
+                                            <td>{{d.empleado}}</td>
+                                            <td>{{d.base_recibida}}</td>
+                                            <td>{{d.base_entregada}}</td>
+                                            <td>{{d.entrega_caja_m}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>    
+                            </div>
+                            <!--div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div-->
+                        </div>
+                    </div>
+                </div>
+                <!--Tabla de Edición-->
+                <div class="card shadow" >
+                    <table class="table table-bordered">
                         <thead>
                             <th scope="col">#</th>
-                            <th scope="col">Username</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Password</th>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Empleado</th>
+                            <th scope="col">Base Recibida</th>
+                            <th scope="col">Ingreso Efectivo</th>
+                            <th scope="col">Ingreso Datafono</th>
+                            <th scope="col">Otros Medios</th>
+                            <th scope="col">Gastos</th>
+                            <th scope="col">Base Entregada</th>
+                            <th scope="col">Entrega Admin</th>
                             <th scope="col">Edit</th>
                             <th scope="col">Delete</th>
                         </thead>
-                    <tbody>
+                        <tbody>
                         {% for d in data %}
                             <tr>
                                 <td>{{d.Id}}</td>
-                                <td>{{d.Username}}</td>
-                                <td>{{d.Firstname}}</td>
-                                <td>{{d.Passw}}</td>
+                                <td>{{d.turno_cod}}</td>
+                                <td>{{d.empleado}}</td>
+                                <td>{{d.base_recibida}}</td>
+                                <td>{{d.efectivo}}</td>
+                                <td>{{d.datafono}}</td>
+                                <td>{{d.otros}}</td>
+                                <td>{{d.gastos}}</td>
+                                <td>{{d.base_entregada}}</td>
+                                <td>{{d.entrega_caja_m}}</td>
                                 <td><button class="btn btn-primary btn-sm" id="btn-edit{{d.Id}}" data-bs-toggle="modal" data-bs-target="#modal{{d.Id}}">Edit</button></td>
                                 <td><a href="{{url_for('delete', id=d.Id)}}" class="btn btn-danger btn-sm">Delete</a></td>
                             </tr>
-                                <! modal >
-
+                        <!--modal-->
                         <div class="modal fade" id="modal{{d.Id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{d.Username}}</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{d.Turno}}</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
                                 <div class="modal-body">
                                     <form action="/edit/{{d.Id}}" method="POST">
-                                        <label>Username</label>
-                                        <input type="text" class="form-control mb-3" name="Username" value="{{d.Username}}">
-                                        <label>Name</label>
-                                        <input type="text" class="form-control mb-3" name="Name" value="{{d.Firstname}}">
-                                        <label>Password</label>
-                                        <input type="text" class="form-control mb-3" name="Password" value="{{d.Passw}}">
-                                
+                                        <label>Turno</label>
+                                        <input type="text" class="form-control mb-3" name="Turno" value="{{d.turno_cod}}">
+                                        <label>Empleado</label>
+                                        <input type="text" class="form-control mb-3" name="Empleado" value="{{d.empleado}}">
+                                        <label>Base Recibida</label>
+                                        <input type="text" class="form-control mb-3" name="Recibido" value="{{d.base_recibida}}">
+                                        <label>Ingreso Efectivo</label>
+                                        <input type="text" class="form-control mb-3" name="Efectivo" value="{{d.efectivo}}">
+                                        <label>Ingreso Datafono</label>
+                                        <input type="text" class="form-control mb-3" name="Datafono" value="{{d.datafono}}">
+                                        <label>Otros Medios</label>
+                                        <input type="text" class="form-control mb-3" name="OtrosMedios" value="{{d.otros}}">
+                                        <label>Gastos</label>
+                                        <input type="text" class="form-control mb-3" name="Gastos" value="{{d.gastos}}">
+                                        <label>Base Entregada</label>
+                                        <input type="text" class="form-control mb-3" name="Entregado" value="{{d.base_entregada}}">
+                                        <label>Entrega Admin</label>
+                                        <input type="text" class="form-control mb-3" name="EntregadoM" value="{{d.entrega_caja_m}}">
                                 </div>
-                                <div class="modal-footer">                                  
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                </div>
-                                </form>
+                                    <div class="modal-footer">                                  
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                    </form>
                                 </div>
                             </div>
                             </div>
                             
                         {% endfor %}
                     </tbody>
-                </table-->    
-            </div>
-        </div>
-    </div>
+                </table>
+            </div> 
 
     <!-- JavaScript de Bootstrap y jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
