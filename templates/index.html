@@ -1,8 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<style>
+    body {
+      background-color: rgb(206, 226, 222);
+    }
+    </style>
 
-    <h1 class="text-center mt-5 mb-5 text-primary" > SISTEMA ARQUEO</h1> 
+    <h1 class="text-center mt-5 mb-5 text-primary" > SATHE (Sistema Arqueo de Turnos Hotel Esperanza)</h1> 
     <div class="container">
         <div class="card shadow" >
             <div class="card-body">
@@ -42,15 +47,15 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Ingreso Efectivo</label>
+                            <label>Efectivo</label>
                             <input type="text" class="col-f mb-3" name="Efectivo" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Ingreso Datafono</label>
+                            <label>Datafono</label>
                             <input type="text" class="col-f mb-3" name="Datafono" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Ingreso Otros Medios</label>
+                            <label>Otros Medios</label>
                             <input type="text" class="col-f mb-3" name="OtrosMedios" placeholder="$" required>
                         </div>
                     </div>
@@ -60,11 +65,11 @@
                             <input type="text" class="col-f mb-3" name="Entregado" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Entrega a Caja Mayor</label>
+                            <label>Sobre</label>
                             <input type="text" class="col-f mb-3" name="EntregadoM" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Gastos de Caja</label>
+                            <label>Gastos</label>
                             <input type="text" class="col-f mb-3" name="Gastos" placeholder="$" required>
                         </div>
                     </div>
@@ -244,7 +249,13 @@
                     </tbody>
                 </table-->
             </div> 
-
+        </div> 
+            <div class="container-fluid py-4 px-sm-3 px-md-5">
+                <p class="m-0 text-center">
+                    &copy; <a class="font-weight-semi-bold" href="#">www.kernelsystemsas.com</a>. All Rights Reserved. Designed by
+                    <a class="font-weight-semi-bold" href="#">Kernel System</a>
+                </p>
+            </div>
     <!-- JavaScript de Bootstrap y jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
