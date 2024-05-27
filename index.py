@@ -36,6 +36,17 @@ def home():
     cursor.close()
     return render_template("index.html", data=insertObject)
 
+#Ruta para la busqueda 
+@app.route('/search_turno', methods=['GET'])
+def search_turno():
+    turno_code = request.args.get('Turno')
+    cur = db.mydb.cursor()
+    query = "SELECT Id, turno_cod, empleado, base_recibida, efectivo, datafono, otros, gastos, base_entregada, entrega_caja_m FROM arqueo WHERE turno_cod = %s"
+    cur.execute(query, (turno_code,))
+    filtered_data = cur.fetchall()
+    cur.close()
+    return render_template('index.html', data=filtered_data)
+
 # Ruta para guardar Usuarios en La BD
 @app.route('/user', methods=['POST'])
 def addUser():
@@ -105,7 +116,7 @@ def addUser2():
     entregadoM = request.form['EntregadoM']
     gastos = request.form['Gastos']
     observacion = request.form['Observacion']
-    if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos and observacion:
+    if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
         # Convertir las fechas al formato YYYY-MM-DD
         fecha_inicio_convertida = convertir_fecha(fecha_inicio)
         fecha_fin_convertida = convertir_fecha(fecha_fin)

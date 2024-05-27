@@ -77,11 +77,10 @@
                             </div>
                         <div class="col">
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Save</button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button>
+                            <!--button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button-->
                         </div>
                     </div>
                 </form>
-
                 <!-- Modal -->
                 <div class="modal fade modal-lg" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -120,7 +119,58 @@
                         </div>
                     </div>
                 </div>
-                <!--Tabla de Edición-->
+                <form action="/search_turno" method="GET">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Buscar por Código de Turno</label>
+                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Tabla de resultados -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Empleado</th>
+                            <th scope="col">Base Recibida</th>
+                            <th scope="col">Ingreso Efectivo</th>
+                            <th scope="col">Ingreso Datafono</th>
+                            <th scope="col">Otros Medios</th>
+                            <th scope="col">Gastos</th>
+                            <th scope="col">Base Entregada</th>
+                            <th scope="col">Entrega Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if data %}
+                        {% for d in data %}
+                            <tr>
+                                <td>{{ d[0] }}</td>
+                                <td>{{ d[1] }}</td>
+                                <td>{{ d[2] }}</td>
+                                <td>{{ d[3] }}</td>
+                                <td>{{ d[4] }}</td>
+                                <td>{{ d[5] }}</td>
+                                <td>{{ d[6] }}</td>
+                                <td>{{ d[7] }}</td>
+                                <td>{{ d[8] }}</td>
+                                <td>{{ d[9] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+
+                <!--Tabla de Edición>
                 <div class="card shadow" >
                     <table class="table table-bordered">
                         <thead>
@@ -153,7 +203,7 @@
                                 <td><button class="btn btn-primary btn-sm" id="btn-edit{{d.Id}}" data-bs-toggle="modal" data-bs-target="#modal{{d.Id}}">Edit</button></td>
                                 <td><a href="{{url_for('delete', id=d.Id)}}" class="btn btn-danger btn-sm">Delete</a></td>
                             </tr>
-                        <!--modal-->
+                        <modal>
                         <div class="modal fade" id="modal{{d.Id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -192,7 +242,7 @@
                             
                         {% endfor %}
                     </tbody>
-                </table>
+                </table-->
             </div> 
 
     <!-- JavaScript de Bootstrap y jQuery -->
@@ -202,22 +252,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <!-- Configuración del datepicker -->
 <script>
-  $(document).ready(function(){
-      $('#fecha_ingreso').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true,
-          language: 'es'
-      });
-  });
-  $(document).ready(function(){
-      $('#fecha_salida').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true,
-          language: 'es'
-      });
-  });
+$(document).ready(function(){
+    $('#fecha_ingreso').datepicker({
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        language: 'es'
+    });
+});
+$(document).ready(function(){
+    $('#fecha_salida').datepicker({
+        format: 'dd/mm/yyyy',
+        autoclose: true,
+        language: 'es'
+    });
+});
 
-  function convertSelection() {
+function convertSelection() {
             const selectElement = document.getElementById('selectElement');
             const inputElement = document.getElementById('inputElement');
             inputElement.value = selectElement.value;
