@@ -3,10 +3,10 @@
 {% block content %}
 <style>
     body {
-      background-color: rgb(206, 226, 222);
+      /*background-color: rgb(206, 226, 222);*/
+      background-image: url("/static/images/bamboo.jpg");
     }
-    </style>
-
+</style>
     <h1 class="text-center mt-5 mb-5 text-primary" > SATHE (Sistema Arqueo de Turnos Hotel Esperanza)</h1> 
     <div class="container">
         <div class="card shadow" >
@@ -14,25 +14,25 @@
                 <form action="/user2" method="POST">
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Fecha Inicio de Turno</label>
+                            <label>Fecha Inicio de Turno <span style="color: red;">*</span></label>
                             <div class="input-group date">
                                 <input type="text" class="form-control mb-3" id="fecha_ingreso" name="FechaIn" required>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                         <div class="col">
-                            <label>Fecha Fin de Turno</label>
+                            <label>Fecha Fin de Turno <span style="color: red;">*</span></label>
                             <div class="input-group date">
                                 <input type="text" class="form-control mb-3" id="fecha_salida" name="FechaOut" required>
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                         <div class="col">
-                            <label>Turno</label>
+                            <label>Turno <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
                         </div>
                         <div class="col">
-                            <label>Empleado</label>
+                            <label>Empleado <span style="color: red;">*</span></label>
                             <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
                                 <option selected></option>
                                 <option value="Betty Berta">Betty Berta</option>
@@ -41,35 +41,35 @@
                             </select>
                         </div>
                         <div class="col">
-                            <label>Base Recibida</label>
+                            <label>Base Recibida <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Recibido" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Efectivo</label>
+                            <label>Efectivo <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Efectivo" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Datafono</label>
+                            <label>Datafono <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Datafono" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Otros Medios</label>
+                            <label>Otros Medios <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="OtrosMedios" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Base Entregada</label>
+                            <label>Base Entregada <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Entregado" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Sobre</label>
+                            <label>Sobre <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="EntregadoM" placeholder="$" required>
                         </div>
                         <div class="col">
-                            <label>Gastos</label>
+                            <label>Gastos <span style="color: red;">*</span></label>
                             <input type="text" class="col-f mb-3" name="Gastos" placeholder="$" required>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                         <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save</button>
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
                             <!--button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button-->
                         </div>
                     </div>
@@ -124,6 +124,9 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-t py-2 px-sm-3 px-md-5">
+                    <h3 class="m-0 text-center">Soportes de Caja Menor </h3>
+                </div>
                 <form action="/search_turno" method="GET">
                     <div class="row mb-3">
                         <div class="col">
@@ -131,7 +134,7 @@
                             <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
                         </div>
                         <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar</button>
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
                         </div>
                     </div>
                 </form>
@@ -174,7 +177,6 @@
                     {% endif %}
                     </tbody>
                 </table>
-
                 <!--Tabla de Edición>
                 <div class="card shadow" >
                     <table class="table table-bordered">
