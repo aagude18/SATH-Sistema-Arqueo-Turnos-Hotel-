@@ -306,6 +306,8 @@
                                             <th scope="col">Beneficiario</th>
                                             <th scope="col">Concepto</th>
                                             <th scope="col">Valor Gasto</th>
+                                            <th scope="col">Edit</th>
+                                            <th scope="col">Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -313,12 +315,42 @@
                                         {% for d in data_gastos %}
                                             <tr>
                                                 <td>{{ d[0] }}</td>
-                                                <td>{{ d[1] }}</td>
-                                                <td>{{ d[2] }}</td>
-                                                <td>{{ d[3] }}</td>
-                                                <td>{{ d[4] }}</td>
-                                                <td>{{ d[5] }}</td>
+                                                <td>{{ d[1]}}</td>
+                                                <td>{{ d[2]}}</td>
+                                                <td>{{ d[3]}}</td>
+                                                <td>{{ d[4]}}</td>
+                                                <td>{{ d[5]}}</td>
+                                                <td><button class="btn btn-primary btn-sm" id="btn-edit{{d[0]}}" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit</button></td>
+                                                <td><a href="{{url_for('delete_gastos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
                                             </tr>
+                                            <!--MODAL-->
+                                            <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{d[1]}}</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                    <div class="modal-body">
+                                                        <form action="/edit_gastos/{{d[0]}}" method="POST">
+                                                            <label>Turno</label>
+                                                            <input type="text" class="form-control mb-3" name="Turno" value="{{d[1]}}">
+                                                            <label>Responsable</label>
+                                                            <input type="text" class="form-control mb-3" name="Empleado" value="{{d[2]}}">
+                                                            <label>Beneficiario</label>
+                                                            <input type="text" class="form-control mb-3" name="Beneficiario" value="{{d[3]}}">
+                                                            <label>Concepto</label>
+                                                            <input type="text" class="form-control mb-3" name="Concepto" value="{{d[4]}}">
+                                                            <label>Valor Gastado</label>
+                                                            <input type="text" class="form-control mb-3" name="Valor" value="{{d[5]}}">
+                                                    </div>
+                                                        <div class="modal-footer">                                  
+                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                </div>
                                         {% endfor %}
                                     {% else %}
                                         <tr>

@@ -95,8 +95,8 @@ def delete(id):
 def delete_gastos(id):
     cursor = db.mydb.cursor()
     sql = "DELETE FROM gastos WHERE id=%s"
-    data = (id,)
-    cursor.execute(sql, data)
+    data_gastos = (id,)
+    cursor.execute(sql, data_gastos)
     db.mydb.commit()
     return redirect(url_for('home'))
 
@@ -132,8 +132,8 @@ def edit_gastos(id):
     if turno and empleado and beneficiario and concepto and valor:
         cursor = db.mydb.cursor()
         sql = "UPDATE gastos SET turno_cod =%s, responsable =%s, beneficiario =%s, concepto =%s, valor_pagado =%s WHERE Id =%s"
-        data = (turno, empleado, beneficiario, concepto, valor, id)
-        cursor.execute(sql, data)
+        data_gastos = (turno, empleado, beneficiario, concepto, valor, id)
+        cursor.execute(sql, data_gastos)
         db.mydb.commit()
     return redirect(url_for('home'))
 
@@ -185,8 +185,8 @@ def addUser3():
     if turno and empleado and beneficiario and concepto and valor:
         cursor = db.mydb.cursor()
         sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
-        data = (turno, empleado, beneficiario, concepto, valor)
-        cursor.execute(sql, data)
+        data_gastos = (turno, empleado, beneficiario, concepto, valor)
+        cursor.execute(sql, data_gastos)
         db.mydb.commit()
     return redirect(url_for('home'))
 
