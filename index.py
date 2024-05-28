@@ -6,21 +6,17 @@ template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
 app = Flask(__name__) # Inicia flask y lo almacena en una variable
 
-# Creating simple Routes 
-#@app.route('/test')
-#def test():
-#    return "Home Page"
-
-#@app.route('/test/about/')
-#def about_test():
-#    return "About Page"
-
+#CONVERSIÓN DE FORMATO DE FECHA 
 def convertir_fecha(fecha_str):
     try:
         return datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
     except ValueError as e:
         print(f"Error al convertir la fecha: {e}")
         return None
+
+#CONVERSIÓN DE FORMATO DE PESOS
+def int_a_pesos(monto_entero):
+    return "${:,.2f}".format(monto_entero)
 
 # Routes to Render Something
 @app.route('/')
@@ -60,10 +56,12 @@ def search_gastos():
     filtered_data2 = cur2.fetchall()
     cur.close()
     cur2.close()
+    suma_valor = 0
     suma_total = 0
     for fila in filtered_data2:
         # Suponiendo que la columna que deseas sumar se llama 'valor'
-        suma_total += int(fila['valor_pagado'])
+        suma_valor += int(fila['valor_pagado'])
+        suma_total = int_a_pesos(suma_valor)
     return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
 
 
@@ -92,8 +90,17 @@ def delete(id):
     db.mydb.commit()
     return redirect(url_for('home'))
 
+#Ruta para Eliminar en tabla de Gastos
+@app.route('/delete_gastos/<string:id>')
+def delete_gastos(id):
+    cursor = db.mydb.cursor()
+    sql = "DELETE FROM gastos WHERE id=%s"
+    data = (id,)
+    cursor.execute(sql, data)
+    db.mydb.commit()
+    return redirect(url_for('home'))
 
-#Ruta Para Eliminar
+#Ruta Para Editar
 @app.route('/edit/<string:id>', methods=['POST'])
 def edit(id):
     turno = request.form['Turno']
@@ -113,6 +120,23 @@ def edit(id):
         cursor.execute(sql, data)
         db.mydb.commit()
     return redirect(url_for('home'))
+
+# Ruta para Editar Gastos
+@app.route('/edit_gastos/<string:id>', methods=['POST'])
+def edit_gastos(id):
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    beneficiario = request.form['Beneficiario']
+    concepto = request.form['Concepto']
+    valor = request.form['Valor']
+    if turno and empleado and beneficiario and concepto and valor:
+        cursor = db.mydb.cursor()
+        sql = "UPDATE gastos SET turno_cod =%s, responsable =%s, beneficiario =%s, concepto =%s, valor_pagado =%s WHERE Id =%s"
+        data = (turno, empleado, beneficiario, concepto, valor, id)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
 
 @app.route('/enlaces', strict_slashes=False)
 def enlaces():
