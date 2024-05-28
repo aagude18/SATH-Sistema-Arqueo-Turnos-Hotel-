@@ -36,7 +36,7 @@ def home():
     cursor.close()
     return render_template("index.html", data=insertObject)
 
-#Ruta para la busqueda 
+#Ruta para la busqueda de Arqueo 
 @app.route('/search_turno', methods=['GET'])
 def search_turno():
     turno_code = request.args.get('Turno')
@@ -46,6 +46,27 @@ def search_turno():
     filtered_data = cur.fetchall()
     cur.close()
     return render_template('index.html', data=filtered_data)
+
+#Ruta para la busqueda de Gastos 
+@app.route('/search_gastos', methods=['GET'])
+def search_gastos():
+    turno_gasto = request.args.get('Turno')
+    cur = db.mydb.cursor()
+    query = "SELECT * FROM gastos WHERE turno_cod = %s"
+    cur.execute(query, (turno_gasto,))
+    filtered_data = cur.fetchall()
+    cur2 = db.mydb.cursor(dictionary=True)
+    cur2.execute(query, (turno_gasto,))
+    filtered_data2 = cur2.fetchall()
+    cur.close()
+    cur2.close()
+    suma_total = 0
+    for fila in filtered_data2:
+        # Suponiendo que la columna que deseas sumar se llama 'valor'
+        suma_total += int(fila['valor_pagado'])
+    return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
+
+
 
 # Ruta para guardar Usuarios en La BD
 @app.route('/user', methods=['POST'])
@@ -125,6 +146,22 @@ def addUser2():
         cursor = db.mydb.cursor()
         sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         data = (fecha_inicio_convertida, fecha_fin_convertida, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#Ruta para los Gastos 
+@app.route('/user3', methods=['POST'])
+def addUser3():
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    beneficiario = request.form['Beneficiario']
+    concepto = request.form['Concepto']
+    valor = request.form['Valor']
+    if turno and empleado and beneficiario and concepto and valor:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
+        data = (turno, empleado, beneficiario, concepto, valor)
         cursor.execute(sql, data)
         db.mydb.commit()
     return redirect(url_for('home'))

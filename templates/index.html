@@ -124,9 +124,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-t py-2 px-sm-3 px-md-5">
-                    <h3 class="m-0 text-center">Soportes de Caja Menor </h3>
-                </div>
                 <form action="/search_turno" method="GET">
                     <div class="row mb-3">
                         <div class="col">
@@ -252,6 +249,91 @@
                 </table-->
             </div> 
         </div> 
+        <div class="container mt-3">
+            <div class="card shadow" >
+                <div class="card-body">
+                    <div class="col-t py-2 px-sm-3 px-md-5">
+                        <h3 class="m-0 text-center">Soportes de Caja Menor </h3>
+                            </div>       
+                                <form action="/user3" method="POST">
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Turno <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Responsable <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Empleado" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Beneficiario <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Beneficiario" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Concepto <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Concepto" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Valor Gastado <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Valor" required>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                            <!--button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button-->
+                                        </div>
+                                    </div>
+                                </form>
+                                <form action="/search_gastos" method="GET">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Buscar por Código de Turno</label>
+                                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Tabla de resultados -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Turno</th>
+                                            <th scope="col">Empleado</th>
+                                            <th scope="col">Beneficiario</th>
+                                            <th scope="col">Concepto</th>
+                                            <th scope="col">Valor Gasto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if data_gastos %}
+                                        {% for d in data_gastos %}
+                                            <tr>
+                                                <td>{{ d[0] }}</td>
+                                                <td>{{ d[1] }}</td>
+                                                <td>{{ d[2] }}</td>
+                                                <td>{{ d[3] }}</td>
+                                                <td>{{ d[4] }}</td>
+                                                <td>{{ d[5] }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                                <div class="col">
+                                    <label><strong> Total Gastado =  $ {{suma_total}} </strong></label>
+                                </div>
+                            </div> 
+                        </div>
+                    </div> 
+
             <div class="container-fluid py-4 px-sm-3 px-md-5">
                 <p class="m-0 text-center">
                     &copy; <a class="font-weight-semi-bold" href="#">www.kernelsystemsas.com</a>. All Rights Reserved. Designed by
