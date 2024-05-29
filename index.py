@@ -64,6 +64,35 @@ def search_gastos():
         suma_total = int_a_pesos(suma_valor)
     return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
 
+#Ruta para la busqueda de Ventas 
+@app.route('/search_ventas', methods=['GET'])
+def search_ventas():
+    turno_venta = request.args.get('Turno')
+    cur = db.mydb.cursor()
+    query = "SELECT * FROM habitaciones WHERE turno_cod = %s"
+    cur.execute(query, (turno_venta,))
+    filtered_data = cur.fetchall()
+    cur2 = db.mydb.cursor(dictionary=True)
+    cur2.execute(query, (turno_venta,))
+    filtered_data2 = cur2.fetchall()
+    cur.close()
+    cur2.close()
+    suma_valor_efectivo = 0
+    suma_total_efectivo = 0
+    suma_valor_datafono = 0
+    suma_total_datafono = 0
+    suma_valor_otros = 0
+    suma_total_otros = 0
+    for fila in filtered_data2:
+        # Suponiendo que la columna que deseas sumar se llama 'valor'
+        suma_valor_efectivo += int(fila['efectivo'])
+        suma_total_efectivo = int_a_pesos(suma_valor_efectivo)
+        suma_valor_datafono += int(fila['datafono'])
+        suma_total_datafono = int_a_pesos(suma_valor_datafono)
+        suma_valor_otros += int(fila['otros'])
+        suma_total_otros = int_a_pesos(suma_valor_otros)
+    return render_template('index.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+
 
 
 # Ruta para guardar Usuarios en La BD
@@ -187,6 +216,22 @@ def addUser3():
         sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
         data_gastos = (turno, empleado, beneficiario, concepto, valor)
         cursor.execute(sql, data_gastos)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#Ruta para los Ventas 
+@app.route('/ventas', methods=['POST'])
+def ventas():
+    turno = request.form['Turno']
+    habitacion = request.form['Habitacion']
+    efectivo = request.form['Efectivo']
+    datafono = request.form['Datafono']
+    otros = request.form['Otros']
+    if turno and habitacion and efectivo and datafono and otros:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO habitaciones (turno_cod, hab, efectivo, datafono, otros) VALUES (%s, %s, %s, %s, %s)"
+        data_ventas = (turno, habitacion, efectivo, datafono, otros)
+        cursor.execute(sql, data_ventas)
         db.mydb.commit()
     return redirect(url_for('home'))
 
