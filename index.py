@@ -14,7 +14,7 @@ def int_a_pesos(monto_entero):
 @app.route('/')
 def home():
     cursor = db.mydb.cursor()
-    cursor.execute("SELECT empleado, base_recibida, base_entregada, entrega_caja_m, observacion FROM arqueos")
+    cursor.execute("SELECT * FROM arqueos")
     myresult = cursor.fetchall()
     #Convertir a Diccionario
     insertObject = []
@@ -91,6 +91,38 @@ def delete_arqueos(id):
     data = (id,)
     cursor.execute(sql, data)
     db.mydb.commit()
+    return redirect(url_for('home'))
+
+#RUTA PARA AGREGAR VENTA
+@app.route('/add_ventas', methods=['POST'])
+def add_ventas():
+    turno = request.form['Turno']
+    concepto = request.form['Concepto']
+    efectivo = request.form['Efectivo']
+    datafono = request.form['Datafono']
+    otros = request.form['Otros']
+    if turno and concepto and efectivo and datafono and otros:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO ventas (turno_cod, concepto, efectivo, datafono, otros) VALUES (%s, %s, %s, %s, %s)"
+        data = (turno, concepto, efectivo, datafono, otros)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#RUTA PARA AGREGAR GASTO
+@app.route('/add_gastos', methods=['POST'])
+def add_gastos():
+    turno = request.form['Turno']
+    responsable = request.form['Responsable']
+    beneficiario = request.form['Beneficiario']
+    concepto = request.form['Concepto']
+    valor = request.form['Valor']
+    if turno and responsable and beneficiario and concepto and valor:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
+        data = (turno, responsable, beneficiario, concepto, valor)
+        cursor.execute(sql, data)
+        db.mydb.commit()
     return redirect(url_for('home'))
 
 #Ruta para la busqueda de Gastos 
@@ -248,37 +280,6 @@ def addUser2():
         db.mydb.commit()
     return redirect(url_for('home'))
 
-#Ruta para los Gastos 
-@app.route('/user3', methods=['POST'])
-def addUser3():
-    turno = request.form['Turno']
-    empleado = request.form['Empleado']
-    beneficiario = request.form['Beneficiario']
-    concepto = request.form['Concepto']
-    valor = request.form['Valor']
-    if turno and empleado and beneficiario and concepto and valor:
-        cursor = db.mydb.cursor()
-        sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
-        data_gastos = (turno, empleado, beneficiario, concepto, valor)
-        cursor.execute(sql, data_gastos)
-        db.mydb.commit()
-    return redirect(url_for('home'))
-
-#Ruta para los Ventas 
-@app.route('/ventas', methods=['POST'])
-def ventas():
-    turno = request.form['Turno']
-    habitacion = request.form['Habitacion']
-    efectivo = request.form['Efectivo']
-    datafono = request.form['Datafono']
-    otros = request.form['Otros']
-    if turno and habitacion and efectivo and datafono and otros:
-        cursor = db.mydb.cursor()
-        sql = "INSERT INTO habitaciones (turno_cod, hab, efectivo, datafono, otros) VALUES (%s, %s, %s, %s, %s)"
-        data_ventas = (turno, habitacion, efectivo, datafono, otros)
-        cursor.execute(sql, data_ventas)
-        db.mydb.commit()
-    return redirect(url_for('home'))
 
 # Make sure this we are executing this file
 if __name__ == '__main__':
