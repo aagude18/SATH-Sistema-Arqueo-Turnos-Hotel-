@@ -1,0 +1,443 @@
+<div class="container">
+        <div class="card shadow" >
+            <div class="card-body">
+                <form action="/user2" method="POST">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Fecha Inicio de Turno <span style="color: red;">*</span></label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control mb-3" id="fecha_ingreso" name="FechaIn" required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label>Fecha Fin de Turno <span style="color: red;">*</span></label>
+                            <div class="input-group date">
+                                <input type="text" class="form-control mb-3" id="fecha_salida" name="FechaOut" required>
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label>Turno <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                        </div>
+                        <div class="col">
+                            <label>Empleado <span style="color: red;">*</span></label>
+                            <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
+                                <option selected></option>
+                                <option value="Betty Berta">Betty Berta</option>
+                                <option value="Leisby Marrugo">Leisby Marrugo</option>
+                                <option value="Sindry Umaña">Sindry Umaña</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!--div class="row mb-3">
+                        <div class="col">
+                            <label>Efectivo <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Efectivo" placeholder="$" required>
+                        </div>
+                        <div class="col">
+                            <label>Datafono <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Datafono" placeholder="$" required>
+                        </div>
+                        <div class="col">
+                            <label>Otros Medios <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="OtrosMedios" placeholder="$" required>
+                        </div>
+                    </div-->
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Base Recibida <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Recibido" placeholder="$" required>
+                        </div>
+                        <div class="col">
+                            <label>Base Entregada <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Entregado" placeholder="$" required>
+                        </div>
+                        <div class="col">
+                            <label>Sobre <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="EntregadoM" placeholder="$" required>
+                        </div>
+                        <!--div class="col">
+                            <label>Gastos <span style="color: red;">*</span></label>
+                            <input type="text" class="col-f mb-3" name="Gastos" placeholder="$" required>
+                        </div-->
+                    </div>
+                    <div class="row mb-3">
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    <label for="comment">Observaciones:</label>
+                                <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
+                                </div>
+                            </div>
+                        <div class="col">
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                            <!--button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button-->
+                        </div>
+                    </div>
+                </form>
+                <form action="/search_turno" method="GET">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Buscar por Código de Turno</label>
+                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#myModal">Ingresar Habitaciones <i class="fa fa-edit"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Tabla de resultados -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Empleado</th>
+                            <th scope="col">Base Recibida</th>
+                            <th scope="col">Base Entregada</th>
+                            <th scope="col">Entrega Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if data %}
+                        {% for d in data %}
+                            <tr>
+                                <td>{{ d[1] }}</td>
+                                <td>{{ d[2] }}</td>
+                                <td>{{ d[3] }}</td>
+                                <td>{{ d[8] }}</td>
+                                <td>{{ d[9] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+                <!-- Modal -->
+                <div class="modal fade modal-lg" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/user2" method="POST">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Fecha Inicio de Turno <span style="color: red;">*</span></label>
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control mb-3" id="fecha_ingreso" name="FechaIn" required>
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label>Fecha Fin de Turno <span style="color: red;">*</span></label>
+                                            <div class="input-group date">
+                                                <input type="text" class="form-control mb-3" id="fecha_salida" name="FechaOut" required>
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <label>Turno <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Empleado <span style="color: red;">*</span></label>
+                                            <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
+                                                <option selected></option>
+                                                <option value="Betty Berta">Betty Berta</option>
+                                                <option value="Leisby Marrugo">Leisby Marrugo</option>
+                                                <option value="Sindry Umaña">Sindry Umaña</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <!--div class="row mb-3">
+                                        <div class="col">
+                                            <label>Efectivo <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Efectivo" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Datafono <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Datafono" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Otros Medios <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="OtrosMedios" placeholder="$" required>
+                                        </div>
+                                    </div-->
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Base Recibida <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Recibido" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Base Entregada <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Entregado" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Sobre <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="EntregadoM" placeholder="$" required>
+                                        </div>
+                                        <!--div class="col">
+                                            <label>Gastos <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Gastos" placeholder="$" required>
+                                        </div-->
+                                    </div>
+                                    <div class="row mb-3">
+                                            <div class="col-lg-8">
+                                                <div class="form-group">
+                                                    <label for="comment">Observaciones:</label>
+                                                <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
+                                                </div>
+                                            </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                            <!--button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Buscar <i class="fa fa-search"></i></button-->
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!--div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div-->
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div> 
+        <!--CONTAINER 2-->
+        <div class="container mt-3">
+            <div class="card shadow" >
+                <div class="card-body">
+                    <div class="col-t py-2 px-sm-3 px-md-5">
+                        <h3 class="m-0 text-center">Habitaciones Vendidas </h3>
+                            </div>       
+                                <form action="/search_ventas" method="GET">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Buscar por Código de Turno</label>
+                                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#myModalVenta">Ingresar Ventas <i class="fa fa-edit"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Tabla de resultados -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Turno</th>
+                                            <th scope="col">Habitación</th>
+                                            <th scope="col">Efectivo</th>
+                                            <th scope="col">Datafono</th>
+                                            <th scope="col">Otros Medios</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if data_ventas %}
+                                        {% for d in data_ventas %}
+                                            <tr>
+                                                <td>{{ d[1]}}</td>
+                                                <td>{{ d[2]}}</td>
+                                                <td>{{ d[3]}}</td>
+                                                <td>{{ d[4]}}</td>
+                                                <td>{{ d[5]}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                                <div class="col">
+                                    <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
+                                </div>
+                                    <div class="col"><label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
+                                </div>
+                                    <div class="col">
+                                        <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label></div>
+                                </div>
+                                <!-- Modal -->
+                <div class="modal fade modal-lg" id="myModalVenta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detalle de la venta</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/ventas" method="POST">
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Turno <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Habitación <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Habitacion" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Efectivo <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Efectivo" placeholder="$" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Datafono <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Datafono" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Otros Medios <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Otros" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
+                            </div> 
+                        </div>
+                    </div>
+                </div>
+        <!--CONTAINER 3-->
+        <div class="container mt-3">
+            <div class="card shadow" >
+                <div class="card-body">
+                    <div class="col-t py-2 px-sm-3 px-md-5">
+                        <h3 class="m-0 text-center">Soportes de Caja Menor </h3>
+                            </div>       
+                                <form action="/search_gastos" method="GET">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Buscar por Código de Turno</label>
+                                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#myModalGasto">Ingresar Gastos <i class="fa fa-edit"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- Tabla de resultados -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Turno</th>
+                                            <th scope="col">Empleado</th>
+                                            <th scope="col">Beneficiario</th>
+                                            <th scope="col">Concepto</th>
+                                            <th scope="col">Valor Gasto</th>
+                                            <th scope="col">Edit</th>
+                                            <th scope="col">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if data_gastos %}
+                                        {% for d in data_gastos %}
+                                            <tr>
+                                                <td>{{ d[1]}}</td>
+                                                <td>{{ d[2]}}</td>
+                                                <td>{{ d[3]}}</td>
+                                                <td>{{ d[4]}}</td>
+                                                <td>{{ d[5]}}</td>
+                                                <td><button class="btn btn-primary btn-sm" id="btn-edit{{d[0]}}" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit</button></td>
+                                                <td><a href="{{url_for('delete_gastos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
+                                            </tr>
+                                            <!--MODAL-->
+                                            <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{d[1]}}</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                    <div class="modal-body">
+                                                        <form action="/edit_gastos/{{d[0]}}" method="POST">
+                                                            <label>Turno</label>
+                                                            <input type="text" class="form-control mb-3" name="Turno" value="{{d[1]}}">
+                                                            <label>Responsable</label>
+                                                            <input type="text" class="form-control mb-3" name="Empleado" value="{{d[2]}}">
+                                                            <label>Beneficiario</label>
+                                                            <input type="text" class="form-control mb-3" name="Beneficiario" value="{{d[3]}}">
+                                                            <label>Concepto</label>
+                                                            <input type="text" class="form-control mb-3" name="Concepto" value="{{d[4]}}">
+                                                            <label>Valor Gastado</label>
+                                                            <input type="text" class="form-control mb-3" name="Valor" value="{{d[5]}}">
+                                                    </div>
+                                                        <div class="modal-footer">                                  
+                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                        </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+                                <div class="col">
+                                    <label><strong> Total Gastado =  {{suma_total}} </strong></label>
+                                </div>
+                                <!-- Modal -->
+                <div class="modal fade modal-lg" id="myModalGasto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal Gasto</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/user3" method="POST">
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Turno <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Responsable <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Empleado" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Beneficiario <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Beneficiario" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3 mt-4">
+                                        <div class="col">
+                                            <label>Concepto <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Concepto" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Valor Gastado <span style="color: red;">*</span></label>
+                                            <input type="text" class="col-f mb-3" name="Valor" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+        </div>
+    </div>

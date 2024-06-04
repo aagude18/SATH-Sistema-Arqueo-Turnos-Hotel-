@@ -6,14 +6,6 @@ template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
 app = Flask(__name__) # Inicia flask y lo almacena en una variable
 
-#CONVERSIÓN DE FORMATO DE FECHA 
-def convertir_fecha(fecha_str):
-    try:
-        return datetime.strptime(fecha_str, '%d/%m/%Y').strftime('%Y-%m-%d')
-    except ValueError as e:
-        print(f"Error al convertir la fecha: {e}")
-        return None
-
 #CONVERSIÓN DE FORMATO DE PESOS
 def int_a_pesos(monto_entero):
     return "${:,.2f}".format(monto_entero)
@@ -22,7 +14,7 @@ def int_a_pesos(monto_entero):
 @app.route('/')
 def home():
     cursor = db.mydb.cursor()
-    cursor.execute("SELECT * FROM arqueo")
+    cursor.execute("SELECT empleado, base_recibida, base_entregada, entrega_caja_m, observacion FROM arqueos")
     myresult = cursor.fetchall()
     #Convertir a Diccionario
     insertObject = []
@@ -32,16 +24,74 @@ def home():
     cursor.close()
     return render_template("index.html", data=insertObject)
 
-#Ruta para la busqueda de Arqueo 
-@app.route('/search_turno', methods=['GET'])
-def search_turno():
-    turno_code = request.args.get('Turno')
+
+#RUTA PARA AGREGAR TURNO
+@app.route('/add_turnos', methods=['POST'])
+def add_turnos():
+    fecha_in = request.form['FechaIn']
+    fecha_out = request.form['FechaOut']
+    turno = request.form['Turno']
+    if turno and fecha_in and fecha_out:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO turno (turno_cod, fecha_in, fecha_out) VALUES (%s, %s, %s)"
+        data = (turno, fecha_in, fecha_out)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#RUTA PARA AGREGAR ARQUEOS
+@app.route('/add_arqueos', methods=['POST'])
+def add_arqueos():
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    recibido = request.form['Recibido']
+    entregado = request.form['Entregado']
+    entregadoM = request.form['EntregadoM']
+    observacion = request.form['Observacion']
+    if turno and empleado and recibido and entregado and entregadoM:
+        cursor = db.mydb.cursor()
+        sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
+        data = (turno, empleado, recibido, entregado, entregadoM, observacion)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#RUTA PARA BUSQUEDA DE ARQUEO 
+@app.route('/search_arqueos', methods=['GET'])
+def search_arqueos():
+    turno = request.args.get('Turno')
     cur = db.mydb.cursor()
-    query = "SELECT Id, turno_cod, empleado, base_recibida, efectivo, datafono, otros, gastos, base_entregada, entrega_caja_m FROM arqueo WHERE turno_cod = %s"
-    cur.execute(query, (turno_code,))
+    query = "SELECT * FROM arqueos WHERE turno_cod = %s"
+    cur.execute(query, (turno,))
     filtered_data = cur.fetchall()
     cur.close()
     return render_template('index.html', data=filtered_data)
+
+# RUTA PARA EDITAR ARQUEO
+@app.route('/edit_arqueos/<string:id>', methods=['POST'])
+def edit_arqueos(id):
+    empleado = request.form['Empleado']
+    recibido = request.form['Recibido']
+    entregado = request.form['Entregado']
+    entregadoM = request.form['EntregadoM']
+    observacion = request.form['Observacion']
+    if empleado and recibido and entregado and entregadoM and observacion:
+        cursor = db.mydb.cursor()
+        sql = "UPDATE arqueos SET empleado =%s, base_recibida =%s, base_entregada =%s, entrega_caja_m =%s, observacion =%s WHERE Id =%s"
+        data = (empleado, recibido, entregado, entregadoM, observacion, id)
+        cursor.execute(sql, data)
+        db.mydb.commit()
+    return redirect(url_for('home'))
+
+#RUTA PARA ELIMINAR ARQUEO
+@app.route('/delete_arqueos/<string:id>')
+def delete_arqueos(id):
+    cursor = db.mydb.cursor()
+    sql = "DELETE FROM arqueos WHERE id=%s"
+    data = (id,)
+    cursor.execute(sql, data)
+    db.mydb.commit()
+    return redirect(url_for('home'))
 
 #Ruta para la busqueda de Gastos 
 @app.route('/search_gastos', methods=['GET'])
@@ -191,14 +241,9 @@ def addUser2():
     gastos = request.form['Gastos']
     observacion = request.form['Observacion']
     if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
-        # Convertir las fechas al formato YYYY-MM-DD
-        fecha_inicio_convertida = convertir_fecha(fecha_inicio)
-        fecha_fin_convertida = convertir_fecha(fecha_fin)
-        if fecha_inicio_convertida is None or fecha_fin_convertida is None:
-            return "Error en la conversión de fechas", 400
         cursor = db.mydb.cursor()
         sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (fecha_inicio_convertida, fecha_fin_convertida, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
+        data = (fecha_inicio, fecha_fin, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
         cursor.execute(sql, data)
         db.mydb.commit()
     return redirect(url_for('home'))
