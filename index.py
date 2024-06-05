@@ -104,8 +104,8 @@ def add_ventas():
     if turno and concepto and efectivo and datafono and otros:
         cursor = db.mydb.cursor()
         sql = "INSERT INTO ventas (turno_cod, concepto, efectivo, datafono, otros) VALUES (%s, %s, %s, %s, %s)"
-        data = (turno, concepto, efectivo, datafono, otros)
-        cursor.execute(sql, data)
+        data_ventas = (turno, concepto, efectivo, datafono, otros)
+        cursor.execute(sql, data_ventas)
         db.mydb.commit()
     return redirect(url_for('home'))
 
@@ -120,8 +120,8 @@ def add_gastos():
     if turno and responsable and beneficiario and concepto and valor:
         cursor = db.mydb.cursor()
         sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
-        data = (turno, responsable, beneficiario, concepto, valor)
-        cursor.execute(sql, data)
+        data_gastos = (turno, responsable, beneficiario, concepto, valor)
+        cursor.execute(sql, data_gastos)
         db.mydb.commit()
     return redirect(url_for('home'))
 
@@ -151,7 +151,7 @@ def search_gastos():
 def search_ventas():
     turno_venta = request.args.get('Turno')
     cur = db.mydb.cursor()
-    query = "SELECT * FROM habitaciones WHERE turno_cod = %s"
+    query = "SELECT * FROM ventas WHERE turno_cod = %s"
     cur.execute(query, (turno_venta,))
     filtered_data = cur.fetchall()
     cur2 = db.mydb.cursor(dictionary=True)

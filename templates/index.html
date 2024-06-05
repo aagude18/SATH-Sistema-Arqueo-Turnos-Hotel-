@@ -251,7 +251,62 @@
         </div>
     </div>
     <!--FIN SEGUNDO CONTAINER-->
-
+    <!--TERCER CONTAINER-->
+    <div class="container">
+        <div class="card shadow" >
+            <div class="card-body">
+                <form action="/search_ventas" method="GET">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label>Código de Turno</label>
+                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+                <!-- Tabla de resultados -->
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">Turno</th>
+                            <th scope="col">Concepto</th>
+                            <th scope="col">Efectivo</th>
+                            <th scope="col">Datafono</th>
+                            <th scope="col">Otros Medios</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% if data_ventas %}
+                        {% for d in data_ventas %}
+                            <tr>
+                                <td>{{ d[1]}}</td>
+                                <td>{{ d[2]}}</td>
+                                <td>{{ d[3]}}</td>
+                                <td>{{ d[4]}}</td>
+                                <td>{{ d[5]}}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                        </tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+                <div class="col">
+                    <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
+                </div>
+                    <div class="col"><label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
+                </div>
+                    <div class="col">
+                        <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--FON DE TERCER CONTAINER-->
     <div class="container-fluid py-4 px-sm-3 px-md-5">
         <p class="m-0 text-center">
         &copy; <a class="font-weight-semi-bold" href="#">www.kernelsystemsas.com</a>. All Rights Reserved. Designed by
