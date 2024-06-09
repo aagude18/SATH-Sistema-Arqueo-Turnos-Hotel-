@@ -7,11 +7,12 @@
       background-image: url("/static/imgs/bamboo.jpg");
     }
 </style>
-    <h1 class="text-center mt-5 mb-5 text-primary" > SATHE (Sistema Arqueo de Turnos Hotel Esperanza)</h1> 
+    
     <!--PRIMER CONTAINER-->
     <div class="container">
-        <div class="card shadow" >
+        <div class="card shadow">
             <div class="card-body">
+                <h1 class="text-center text-primary" > SATHE (Sistema Arqueo de Turnos Hotel Esperanza)</h1> 
                 <form action="/add_turnos" method="POST">
                     <div class="row mb-3">
                         <div class="col">
@@ -54,15 +55,15 @@
                         </div>
                         <div class="col">
                             <label>Base Recibida <span style="color: red;">*</span></label>
-                            <input type="text" class="col mb-3" name="Recibido" placeholder="$" required>
+                            <input type="text" class="form-control" name="Recibido" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Base Entregada <span style="color: red;">*</span></label>
-                            <input type="text" class="col mb-3" name="Entregado" placeholder="$" required>
+                            <input type="text" class="form-select" name="Entregado" placeholder="$" required>
                         </div>
                         <div class="col">
                             <label>Entrega Admin <span style="color: red;">*</span></label>
-                            <input type="text" class="col mb-3" name="EntregadoM" placeholder="$" required>
+                            <input type="text" class="form-select" name="EntregadoM" placeholder="$" required>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -105,25 +106,25 @@
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Turno <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                            <input type="text" class="form-control" name="Turno" placeholder="Codigo del Turno" required>
                                         </div>
                                         <div class="col">
                                             <label>Concepto <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Concepto" required>
+                                            <input type="text" class="form-control" name="Concepto" required>
                                         </div>
                                         <div class="col">
                                             <label>Efectivo <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Efectivo" placeholder="$" required>
+                                            <input type="text" class="form-control" name="Efectivo" placeholder="$" required>
                                         </div>
                                     </div>
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Datafono <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Datafono" placeholder="$" required>
+                                            <input type="text" class="form-control" name="Datafono" placeholder="$" required>
                                         </div>
                                         <div class="col">
                                             <label>Otros Medios <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Otros" placeholder="$" required>
+                                            <input type="text" class="form-control" name="Otros" placeholder="$" required>
                                         </div>
                                         <div class="col">
                                             <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
@@ -140,7 +141,7 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detalle de la venta</h1>
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Detalle de los Gastos</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -148,51 +149,26 @@
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Turno <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Turno" placeholder="Codigo del Turno" required>
+                                            <input type="text" class="form-control" name="Turno" placeholder="Codigo del Turno" required>
                                         </div>
                                         <div class="col">
                                             <label>Responsable <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Responsable" required>
+                                            <input type="text" class="form-control" name="Responsable" required>
                                         </div>
                                         <div class="col">
                                             <label>Beneficiario <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Beneficiario" required>
+                                            <input type="text" class="form-control" name="Beneficiario" required>
                                         </div>
                                     </div>
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Concepto <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Concepto" required>
+                                            <input type="text" class="form-control" name="Concepto" required>
                                         </div>
                                         <div class="col">
                                             <label>Valor <span style="color: red;">*</span></label>
-                                            <input type="text" class="col mb-3" name="Valor" placeholder="$" required>
+                                            <input type="text" class="form-control" name="Valor" placeholder="$" required>
                                         </div>                
-                                         <!--SUBIR ARCHIVO-->
-                    <div class="row justify-content-center">
-                        <div class="col-md-3" style="padding:50px 50px;">
-                        {% include 'form.html' %}
-                        </div>
-                        <div class="col-md-8" style="border-left: 1px solid #999; padding:50px 50px;">
-                        {% set path = 'static/archivos/' %}
-                        {% for foto in list_Photos %}
-                        <div class="media">
-                            <img src="{{ path }}{{ foto }}" class="mr-3" alt="{{ foto }}">
-                            <div class="media-body">
-                                <h5 class="mt-0">
-                                <p>
-                                    <span class="index">{{loop.index}}</span>
-                                    <span class="namePhone">{{ foto }}</span>
-                                </p>
-                                </h5>
-                                <p>
-                                <a href="{{ url_for('EliminarFoto', nombreFoto = foto ) }}" type="button" class="btn btn-danger" style="margin-top: 40px;">Eliminar Archivo</a>
-                                </p>
-                            </div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>  
                                         <div class="col">
                                             <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
                                         </div>
@@ -306,13 +282,13 @@
                         {% endif %}
                         </tbody>
                     </table>
-                    <div class="col">
+                    <div class="row">
                         <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
                     </div>
-                        <div class="col">
+                        <div class="row">
                         <label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
                     </div>
-                    <div class="col">
+                    <div class="row">
                         <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label>
                     </div>
                     <h4 style="text-align: center;">Consulta Gastos </h4>

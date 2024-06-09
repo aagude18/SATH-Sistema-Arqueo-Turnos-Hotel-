@@ -21,8 +21,7 @@
   <div class="container text-center">
     <div class="row mb-3">
       <div class="col-md-12">
-        <h1 class="mt-4 bold-800">Crud con FLASK - PYTHON y MYSQL FÁCIL
-          <i class="bi bi-braces"></i> 😱
+        <h1 class="mt-4 bold-800">REGISTRO DE EVIDENCIAS DE GASTOS
           <hr>
         </h1>
       </div>
@@ -32,9 +31,8 @@
 
     <div class="row">
       <div class="col-md-12">
-        <a href="{{ url_for('addCarro') }}" title="Registrar nuevo Carro"
+        <a href="{{ url_for('addCarro') }}" title="Registrar nuevo gasto"
           class="btn btn-primary btn-lg btn-block btn-sm mb-2" style="float:right">
-          <i class="bi bi-car-front-fill"></i>
           Nuevo Registro
         </a>
       </div>
@@ -75,7 +73,7 @@
             li.remove(); //remuevo el registro desde la lista
             mensajeAlerta(msg='Registro Eliminado con éxito.', tipo=1); 
           } else {
-            console.log('Error al intentar borrar el carro ');
+            console.log('Error al intentar borrar el registro ');
           }
         }
       });
