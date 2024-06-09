@@ -1,17 +1,44 @@
-from flask import Flask, render_template, request, redirect, url_for# Render Template es para redireccionar las rutas a los template HTML
-import os
+# Render Template es para redireccionar las rutas a los template HTML
+from flask import Flask, render_template, request, redirect, url_for, jsonify
+from random import sample
+from controller.controllerCarro import *
+#Para subir archivo tipo foto al servidor
+from werkzeug.utils import secure_filename 
+#El módulo os en Python proporciona los detalles y la funcionalidad del sistema operativo.
+import os 
+from os import remove #Modulo  para remover archivo
+from os import path #Modulo para obtener la ruta o directorio
 import src.database as db
 from datetime import datetime
 template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
 app = Flask(__name__) # Inicia flask y lo almacena en una variable
 
+application = app
+
+msg  =''
+tipo =''
+
 #CONVERSIÓN DE FORMATO DE PESOS
 def int_a_pesos(monto_entero):
     return "${:,.2f}".format(monto_entero)
 
+def stringAleatorio():
+    #Generando string aleatorio
+    string_aleatorio = "0123456789abcdefghijklmnopqrstuvwxyz_"
+    longitud         = 20
+    secuencia        = string_aleatorio.upper()
+    resultado_aleatorio  = sample(secuencia, longitud)
+    string_aleatorio     = "".join(resultado_aleatorio)
+    return string_aleatorio
+
+#Funcion que recorre todos los archivos almacenados en la carpeta (archivos)  
+def listaArchivos():
+    urlFiles = 'static/archivos'
+    return (os.listdir(urlFiles))
+
 # Routes to Render Something
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     cursor = db.mydb.cursor()
     cursor.execute("SELECT * FROM arqueos")
@@ -125,7 +152,7 @@ def add_gastos():
         db.mydb.commit()
     return redirect(url_for('home'))
 
-#Ruta para la busqueda de Gastos 
+#RUTA PARA BUSQUEDA DE GASTOS 
 @app.route('/search_gastos', methods=['GET'])
 def search_gastos():
     turno_gasto = request.args.get('Turno')
@@ -146,7 +173,7 @@ def search_gastos():
         suma_total = int_a_pesos(suma_valor)
     return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
 
-#Ruta para la busqueda de Ventas 
+#RUTA PARA BUSQUEDA DE VENTAS 
 @app.route('/search_ventas', methods=['GET'])
 def search_ventas():
     turno_venta = request.args.get('Turno')
@@ -175,21 +202,6 @@ def search_ventas():
         suma_total_otros = int_a_pesos(suma_valor_otros)
     return render_template('index.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
 
-
-
-# Ruta para guardar Usuarios en La BD
-@app.route('/user', methods=['POST'])
-def addUser():
-    username = request.form['Username']
-    name = request.form['Name']
-    password = request.form['Password']
-    if username and name and password:
-        cursor = db.mydb.cursor()
-        sql = "INSERT INTO users (Username, Firstname, Passw) VALUES (%s, %s, %s)"
-        data = (username, name, password)
-        cursor.execute(sql, data)
-        db.mydb.commit()
-    return redirect(url_for('home'))
 
 #Ruta Para Eliminar
 @app.route('/delete/<string:id>')
@@ -232,7 +244,7 @@ def edit(id):
         db.mydb.commit()
     return redirect(url_for('home'))
 
-# Ruta para Editar Gastos
+# RUTA PARA EDITAR GASTOS
 @app.route('/edit_gastos/<string:id>', methods=['POST'])
 def edit_gastos(id):
     turno = request.form['Turno']
@@ -253,32 +265,199 @@ def edit_gastos(id):
 def enlaces():
     return render_template("enlaces.html")
 
-@app.route('/homee', strict_slashes=False)
-def homee():
-    return render_template("homee.html")
+@app.route('/guardar-foto', methods=['GET', 'POST'])
+def registarArchivo():
+        if request.method == 'POST':
+            if(request.files['archivo']):
+                #Script para archivo
+                file     = request.files['archivo']
+                basepath = path.dirname (__file__) #La ruta donde se encuentra el archivo actual
+                filename = secure_filename(file.filename) #Nombre original del archivo
+                
+                #capturando extensión del archivo ejemplo: (.png, .jpg, .pdf ...etc)
+                extension           = path.splitext(filename)[1]
+                nuevoNombreFile     = stringAleatorio() + extension
+                 
+                upload_path = path.join (basepath, 'static/archivos', nuevoNombreFile) 
+                file.save(upload_path)
+        return render_template('index.html', list_Photos = listaArchivos())
 
-#Nuevas Rutas
-@app.route('/user2', methods=['POST'])
-def addUser2():
-    fecha_inicio = request.form['FechaIn']
-    fecha_fin = request.form['FechaOut']
-    turno = request.form['Turno']
-    empleado = request.form['Empleado']
-    recibido = request.form['Recibido']
-    efectivo = request.form['Efectivo']
-    datafono = request.form['Datafono']
-    otros = request.form['OtrosMedios']
-    entregado = request.form['Entregado']
-    entregadoM = request.form['EntregadoM']
-    gastos = request.form['Gastos']
-    observacion = request.form['Observacion']
-    if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
-        cursor = db.mydb.cursor()
-        sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (fecha_inicio, fecha_fin, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
-        cursor.execute(sql, data)
-        db.mydb.commit()
-    return redirect(url_for('home'))
+@app.route('/<string:nombreFoto>', methods=['GET','POST'])
+def EliminarFoto(nombreFoto=''):
+    if request.method == 'GET':
+        #print(nombreFoto) #Nombre del archivo subido
+        basepath = path.dirname (__file__) #C:\xampp\htdocs\elmininar-archivos-con-Python-y-Flask\app
+        url_File = path.join (basepath, 'static/archivos', nombreFoto)
+        #print(url_File)
+        
+        #verifcando si existe el archivo, con la funcion (path.exists) antes de de llamar remove 
+        # para eliminarlo, con el fin de evitar un error si no existe.
+        if path.exists(url_File):
+            remove(url_File) #Borrar foto desde la carpeta
+            #os.unlink(url_File) #Otra forma de borrar archivos en una carpeta
+    return render_template('index.html', list_Photos = listaArchivos())
+        
+    
+#Redireccionando cuando la página no existe
+@app.errorhandler(404)
+def not_found(error):
+    return 'Ruta no encontrada'
+
+
+#Creando mi decorador para el home, el cual retornara la Lista de Carros
+@app.route('/evidencia', methods=['GET','POST'])
+def inicio():
+    return render_template('layout2.html', miData = listaCarros())
+
+
+#RUTAS
+@app.route('/registrar-carro', methods=['GET','POST'])
+def addCarro():
+    return render_template('acciones/add.html')
+
+
+ 
+#Registrando nuevo carro
+@app.route('/carro', methods=['POST'])
+def formAddCarro():
+    if request.method == 'POST':
+        marca               = request.form['marca']
+        modelo              = request.form['modelo']
+        year                = request.form['year']
+        color               = request.form['color']
+        puertas             = request.form['puertas']
+        favorito            = request.form['favorito']
+        if(request.files['foto'] !=''):
+            file     = request.files['foto'] #recibiendo el archivo
+            nuevoNombreFile = recibeFoto(file) #Llamado la funcion que procesa la imagen
+            resultData = registrarCarro(marca, modelo, year, color, puertas, favorito, nuevoNombreFile)
+            if(resultData ==1):
+                return render_template('layout2.html', miData = listaCarros(), msg='El Registro fue un éxito', tipo=1)
+            else:
+                return render_template('layout2.html', miData = listaCarros(), msg='El Registro fue un éxito', tipo=1)
+                #return render_template('layout2.html', msg = 'Metodo HTTP incorrecto', tipo=1)   
+        else:
+            return render_template('layout2.html', msg = 'Debe cargar una foto', tipo=1)
+            
+
+
+@app.route('/form-update-carro/<string:id>', methods=['GET','POST'])
+def formViewUpdate(id):
+    if request.method == 'GET':
+        resultData = updateCarro(id)
+        if resultData:
+            return render_template('acciones/update.html',  dataInfo = resultData)
+        else:
+            return render_template('layout2.html', miData = listaCarros(), msg='No existe el carro', tipo= 1)
+    else:
+        return render_template('layout2.html', miData = listaCarros(), msg = 'Metodo HTTP incorrecto', tipo=1)          
+ 
+   
+  
+@app.route('/ver-detalles-del-carro/<int:idCarro>', methods=['GET', 'POST'])
+def viewDetalleCarro(idCarro):
+    msg =''
+    if request.method == 'GET':
+        resultData = detallesdelCarro(idCarro) #Funcion que almacena los detalles del carro
+        
+        if resultData:
+            return render_template('acciones/view.html', infoCarro = resultData, msg='Detalles del Carro', tipo=1)
+        else:
+            return render_template('acciones/layout2.html', msg='No existe el registro', tipo=1)
+    return redirect(url_for('inicio'))
+    
+
+@app.route('/actualizar-carro/<string:idCarro>', methods=['POST'])
+def  formActualizarCarro(idCarro):
+    if request.method == 'POST':
+        marca           = request.form['marca']
+        modelo          = request.form['modelo']
+        year            = request.form['year']
+        color           = request.form['color']
+        puertas         = request.form['puertas']
+        favorito        = request.form['favorito']
+        
+        #Script para recibir el archivo (foto)
+        if(request.files['foto']):
+            file     = request.files['foto']
+            fotoForm = recibeFoto(file)
+            resultData = recibeActualizarCarro(marca, modelo, year, color, puertas, favorito, fotoForm, idCarro)
+        else:
+            fotoCarro  ='sin_foto.jpg'
+            resultData = recibeActualizarCarro(marca, modelo, year, color, puertas, favorito, fotoCarro, idCarro)
+
+        if(resultData ==1):
+            return render_template('layout2.html', miData = listaCarros(), msg='Datos actualizados', tipo=1)
+        else:
+            msg ='Actualización correcta del registro'
+            return render_template('layout2.html', miData = listaCarros(), msg='Datos actualizados', tipo=1)
+            #return render_template('layout2.html', miData = listaCarros(), msg='No se pudo actualizar', tipo=1)
+
+
+#Eliminar carro
+@app.route('/borrar-carro', methods=['GET', 'POST'])
+def formViewBorrarCarro():
+    if request.method == 'POST':
+        idCarro         = request.form['id']
+        nombreFoto      = request.form['nombreFoto']
+        resultData      = eliminarCarro(idCarro, nombreFoto)
+
+        if resultData ==1:
+            #Nota: retorno solo un json y no una vista para evitar refescar la vista
+            return jsonify([1])
+            #return jsonify(["respuesta", 1])
+        else: 
+            return jsonify([0])
+
+
+
+
+def eliminarCarro(idCarro='', nombreFoto=''):
+        
+    conexion_MySQLdb = connectionBD() #Hago instancia a mi conexion desde la funcion
+    cur              = conexion_MySQLdb.cursor(dictionary=True)
+    
+    cur.execute('DELETE FROM carros WHERE id=%s', (idCarro,))
+    conexion_MySQLdb.commit()
+    resultado_eliminar = cur.rowcount #retorna 1 o 0
+    #print(resultado_eliminar)
+    
+    basepath = os.path.dirname (__file__) #C:\xampp\htdocs\localhost\Crud-con-FLASK-PYTHON-y-MySQL\app
+    url_File = os.path.join (basepath, 'static/fotos_carros', nombreFoto)
+    os.remove(url_File) #Borrar foto desde la carpeta
+    #os.unlink(url_File) #Otra forma de borrar archivos en una carpeta
+    
+
+    return resultado_eliminar
+
+
+
+def recibeFoto(file):
+    print(file)
+    basepath = os.path.dirname (__file__) #La ruta donde se encuentra el archivo actual
+    filename = secure_filename(file.filename) #Nombre original del archivo
+
+    #capturando extensión del archivo ejemplo: (.png, .jpg, .pdf ...etc)
+    extension           = os.path.splitext(filename)[1]
+    nuevoNombreFile     = stringAleatorio() + extension
+    #print(nuevoNombreFile)
+        
+    upload_path = os.path.join (basepath, 'static/fotos_carros', nuevoNombreFile) 
+    file.save(upload_path)
+
+    return nuevoNombreFile
+
+       
+  
+  
+#Redireccionando cuando la página no existe
+@app.errorhandler(404)
+def not_found(error):
+    return redirect(url_for('inicio'))
+    
+    
+    
+    
 
 
 # Make sure this we are executing this file
