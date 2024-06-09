@@ -86,11 +86,11 @@
                     </div>
                 </form>
                 <!-- Tabla de resultados -->
-                <form action="/search_arqueos" method="GET">
+                <form id="search_arqueos">
                     <div class="row mb-3">
                         <div class="col">
                             <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                            <input type="text" class="form-control mb-3" name="Turno" id="turno_arqueo" placeholder="Ingrese código del turno">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
@@ -185,68 +185,9 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL GASTOS-->
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Empleado</th>
-                                <th scope="col">Base Recibida</th>
-                                <th scope="col">Base Entregada</th>
-                                <th scope="col">Entrega Admin</th>
-                                <th scope="col">Observaciones</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% if data %}
-                            {% for d in data %}
-                                <tr>
-                                    <td>{{d[2]}}</td>
-                                    <td>{{d[3]}}</td>
-                                    <td>{{d[4]}}</td>
-                                    <td>{{d[5]}}</td>
-                                    <td>{{d[6]}}</td>
-                                    <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
-                                    <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
-                                </tr>
-                                <!--MODAL-->
-                                <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel">{{d[1]}}</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="/edit_arqueos/{{d[0]}}" method="POST">
-                                                    <label>Empleado</label>
-                                                    <input type="text" class="form-control mb-3" name="Empleado" value="{{d[2]}}">
-                                                    <label>Base Recibida</label>
-                                                    <input type="text" class="form-control mb-3" name="Recibido" value="{{d[3]}}">
-                                                    <label>Base Entregada</label>
-                                                    <input type="text" class="form-control mb-3" name="Entregado" value="{{d[4]}}">
-                                                    <label>Entrega Admin</label>
-                                                    <input type="text" class="form-control mb-3" name="EntregadoM" value="{{d[5]}}">
-                                                    <label>Observaciones</label>
-                                                    <input type="text" class="form-control mb-3" name="Observacion" value="{{d[6]}}">
-                                                
-                                                    <!-- Move the button inside the form -->
-                                                    <div class="modal-footer">                                  
-                                                        <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="10" class="text-center">No se encontraron resultados</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
+                <div id="arqueoresult">
+                    {% block resultados_arqueo %}{% endblock %}
+                </div>
             </div>
         </div>
     </div>
@@ -255,11 +196,11 @@
     <div class="container">
         <div class="card shadow" >
             <div class="card-body">
-                <form action="/search_ventas" method="GET">
+                <form id="search_ventas">
                     <div class="row mb-3">
                         <div class="col">
                             <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                            <input type="text" class="form-control mb-3" id="turnoInput" name="Turno" placeholder="Ingrese código del turno">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
@@ -267,41 +208,9 @@
                     </div>
                 </form>
                 <!-- Tabla de resultados -->
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Turno</th>
-                            <th scope="col">Concepto</th>
-                            <th scope="col">Efectivo</th>
-                            <th scope="col">Datafono</th>
-                            <th scope="col">Otros Medios</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% if data_ventas %}
-                        {% for d in data_ventas %}
-                            <tr>
-                                <td>{{ d[1]}}</td>
-                                <td>{{ d[2]}}</td>
-                                <td>{{ d[3]}}</td>
-                                <td>{{ d[4]}}</td>
-                                <td>{{ d[5]}}</td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="10" class="text-center">No se encontraron resultados</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-                <div class="col">
-                    <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
-                </div>
-                    <div class="col"><label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
-                </div>
-                    <div class="col">
-                        <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label></div>
+                    <div id="ventasresult">
+                        {% block resultados_ventas %}{% endblock %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -326,4 +235,6 @@ function convertSelection() {
         }
 
 </script>
+
+<script src="../static/js/index.js"></script>
 {% endblock%}

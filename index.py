@@ -13,16 +13,11 @@ def int_a_pesos(monto_entero):
 # Routes to Render Something
 @app.route('/')
 def home():
-    cursor = db.mydb.cursor()
-    cursor.execute("SELECT * FROM arqueos")
-    myresult = cursor.fetchall()
-    #Convertir a Diccionario
-    insertObject = []
-    columnName = [column[0] for column in cursor.description]
-    for recrod in myresult:
-        insertObject.append(dict(zip(columnName, recrod)))
-    cursor.close()
-    return render_template("index.html", data=insertObject)
+    return render_template("login.html")
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template("index.html")
 
 
 #RUTA PARA AGREGAR TURNO
@@ -37,7 +32,7 @@ def add_turnos():
         data = (turno, fecha_in, fecha_out)
         cursor.execute(sql, data)
         db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #RUTA PARA AGREGAR ARQUEOS
 @app.route('/add_arqueos', methods=['POST'])
@@ -54,7 +49,7 @@ def add_arqueos():
         data = (turno, empleado, recibido, entregado, entregadoM, observacion)
         cursor.execute(sql, data)
         db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #RUTA PARA BUSQUEDA DE ARQUEO 
 @app.route('/search_arqueos', methods=['GET'])
@@ -65,7 +60,7 @@ def search_arqueos():
     cur.execute(query, (turno,))
     filtered_data = cur.fetchall()
     cur.close()
-    return render_template('index.html', data=filtered_data)
+    return render_template('resultados_arqueo.html', data=filtered_data)
 
 # RUTA PARA EDITAR ARQUEO
 @app.route('/edit_arqueos/<string:id>', methods=['POST'])
@@ -81,7 +76,7 @@ def edit_arqueos(id):
         data = (empleado, recibido, entregado, entregadoM, observacion, id)
         cursor.execute(sql, data)
         db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #RUTA PARA ELIMINAR ARQUEO
 @app.route('/delete_arqueos/<string:id>')
@@ -91,7 +86,7 @@ def delete_arqueos(id):
     data = (id,)
     cursor.execute(sql, data)
     db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #RUTA PARA AGREGAR VENTA
 @app.route('/add_ventas', methods=['POST'])
@@ -107,7 +102,7 @@ def add_ventas():
         data_ventas = (turno, concepto, efectivo, datafono, otros)
         cursor.execute(sql, data_ventas)
         db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #RUTA PARA AGREGAR GASTO
 @app.route('/add_gastos', methods=['POST'])
@@ -154,26 +149,37 @@ def search_ventas():
     query = "SELECT * FROM ventas WHERE turno_cod = %s"
     cur.execute(query, (turno_venta,))
     filtered_data = cur.fetchall()
-    cur2 = db.mydb.cursor(dictionary=True)
-    cur2.execute(query, (turno_venta,))
-    filtered_data2 = cur2.fetchall()
     cur.close()
-    cur2.close()
-    suma_valor_efectivo = 0
-    suma_total_efectivo = 0
-    suma_valor_datafono = 0
-    suma_total_datafono = 0
-    suma_valor_otros = 0
-    suma_total_otros = 0
-    for fila in filtered_data2:
-        # Suponiendo que la columna que deseas sumar se llama 'valor'
-        suma_valor_efectivo += int(fila['efectivo'])
-        suma_total_efectivo = int_a_pesos(suma_valor_efectivo)
-        suma_valor_datafono += int(fila['datafono'])
-        suma_total_datafono = int_a_pesos(suma_valor_datafono)
-        suma_valor_otros += int(fila['otros'])
-        suma_total_otros = int_a_pesos(suma_valor_otros)
-    return render_template('index.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+
+    # Print para verificar los datos recuperados
+    print(filtered_data if filtered_data else "[]")
+    print(turno_venta);
+
+    if filtered_data:
+        cur2 = db.mydb.cursor(dictionary=True)
+        cur2.execute(query, (turno_venta,))
+        filtered_data2 = cur2.fetchall()
+        cur2.close()
+        
+        suma_valor_efectivo = 0
+        suma_total_efectivo = 0
+        suma_valor_datafono = 0
+        suma_total_datafono = 0
+        suma_valor_otros = 0
+        suma_total_otros = 0
+        for fila in filtered_data2:
+            suma_valor_efectivo += int(fila['efectivo'])
+            suma_total_efectivo = int_a_pesos(suma_valor_efectivo)
+            suma_valor_datafono += int(fila['datafono'])
+            suma_total_datafono = int_a_pesos(suma_valor_datafono)
+            suma_valor_otros += int(fila['otros'])
+            suma_total_otros = int_a_pesos(suma_valor_otros)
+
+        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+    else:
+        suma_total_efectivo = suma_total_datafono = suma_total_otros = 0
+        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+
 
 
 
@@ -199,7 +205,7 @@ def delete(id):
     data = (id,)
     cursor.execute(sql, data)
     db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #Ruta para Eliminar en tabla de Gastos
 @app.route('/delete_gastos/<string:id>')
@@ -209,7 +215,7 @@ def delete_gastos(id):
     data_gastos = (id,)
     cursor.execute(sql, data_gastos)
     db.mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #Ruta Para Editar
 @app.route('/edit/<string:id>', methods=['POST'])

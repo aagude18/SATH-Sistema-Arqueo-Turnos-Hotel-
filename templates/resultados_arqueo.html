@@ -1,0 +1,62 @@
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Empleado</th>
+            <th scope="col">Base Recibida</th>
+            <th scope="col">Base Entregada</th>
+            <th scope="col">Entrega Admin</th>
+            <th scope="col">Observaciones</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% if data %}
+        {% for d in data %}
+            <tr>
+                <td>{{d[2]}}</td>
+                <td>{{d[3]}}</td>
+                <td>{{d[4]}}</td>
+                <td>{{d[5]}}</td>
+                <td>{{d[6]}}</td>
+                <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
+                <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
+            </tr>
+            <!--MODAL-->
+            <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{d[1]}}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="/edit_arqueos/{{d[0]}}" method="POST">
+                                <label>Empleado</label>
+                                <input type="text" class="form-control mb-3" name="Empleado" value="{{d[2]}}">
+                                <label>Base Recibida</label>
+                                <input type="text" class="form-control mb-3" name="Recibido" value="{{d[3]}}">
+                                <label>Base Entregada</label>
+                                <input type="text" class="form-control mb-3" name="Entregado" value="{{d[4]}}">
+                                <label>Entrega Admin</label>
+                                <input type="text" class="form-control mb-3" name="EntregadoM" value="{{d[5]}}">
+                                <label>Observaciones</label>
+                                <input type="text" class="form-control mb-3" name="Observacion" value="{{d[6]}}">
+                            
+                                <!-- Move the button inside the form -->
+                                <div class="modal-footer">                                  
+                                    <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="10" class="text-center">No se encontraron resultados</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
