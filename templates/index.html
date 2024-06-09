@@ -12,7 +12,7 @@
     <div class="container">
         <div class="card shadow">
             <div class="card-body">
-                <h1 class="text-center text-primary" > SATHE (Sistema Arqueo de Turnos Hotel Esperanza)</h1> 
+                <h1 class="text-center text-primary" > SATH (Sistema Arqueo de Turnos Hotel)</h1> 
                 <form action="/add_turnos" method="POST">
                     <div class="row mb-3">
                         <div class="col">
@@ -33,52 +33,68 @@
                             <label >Código del Turno <span style="color: red;">*</span></label>
                             <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
                         </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Crear Turno</button>
-                        </div>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary mb-3 mt-4" type="submit">Crear Turno</button>
+                        <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalCierreTurno">Cierre de Turno</button>
                     </div>
                 </form>
-                <form action="/add_arqueos" method="POST">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label >Código del Turno <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
-                        </div>
-                        <div class="col">
-                            <label>Empleado <span style="color: red;">*</span></label>
-                            <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
-                                <option selected></option>
-                                <option value="Betty Berta">Betty Berta</option>
-                                <option value="Leisby Marrugo">Leisby Marrugo</option>
-                                <option value="Sindry Umaña">Sindry Umaña</option>
-                            </select>
-                        </div>
-                        <div class="col">
-                            <label>Base Recibida <span style="color: red;">*</span></label>
-                            <input type="text" class="form-control" name="Recibido" placeholder="$" required>
-                        </div>
-                        <div class="col">
-                            <label>Base Entregada <span style="color: red;">*</span></label>
-                            <input type="text" class="form-select" name="Entregado" placeholder="$" required>
-                        </div>
-                        <div class="col">
-                            <label>Entrega Admin <span style="color: red;">*</span></label>
-                            <input type="text" class="form-select" name="EntregadoM" placeholder="$" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-lg-8">
-                            <div class="form-group">
-                                <label for="comment">Observaciones:</label>
-                            <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
+                <!--MODAL CIERRE TURNO-->
+                <div class="modal fade modal-lg" id="modalCierreTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Cierre de Turno</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
+                            <div class="modal-body">
+                                <form action="/add_arqueos" method="POST">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label >Código del Turno <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Empleado <span style="color: red;">*</span></label>
+                                            <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
+                                                <option selected></option>
+                                                <option value="Betty Berta">Betty Berta</option>
+                                                <option value="Leisby Marrugo">Leisby Marrugo</option>
+                                                <option value="Sindry Umaña">Sindry Umaña</option>
+                                            </select>
+                                        </div>
+                                        <div class="col">
+                                            <label>Base Recibida <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Recibido" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Base Entregada <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-select" name="Entregado" placeholder="$" required>
+                                        </div>
+                                        <div class="col">
+                                            <label>Entrega Admin <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-select" name="EntregadoM" placeholder="$" required>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-lg-8">
+                                            <div class="form-group">
+                                                <label for="comment">Observaciones:</label>
+                                            <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        </div>
+                                    </div>
+                                </form>
+                
+                            </div> 
                         </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
-                        </div>
-                    </div>
-                </form>
-                <div class="row mb-3"><h4 style="text-align: center;">Consulta Arqueos </h4></div>
+                    </div> 
+                </div> 
+                <!--FIN MODAL CIERRE TURNO-->
+                <div class="row mb-3"><h4 style="text-align: center;">Consulta Turnos </h4></div>
                 <!-- Tabla de resultados -->
                 <form action="/search_arqueos" method="GET">
                     <div class="row mb-3">
