@@ -321,7 +321,7 @@ def addGasto():
 @app.route('/gasto', methods=['POST'])
 def formAddGasto():
     if request.method == 'POST':
-        marca               = request.form['marca']
+        turno               = request.form['turno']
         modelo              = request.form['modelo']
         year                = request.form['year']
         color               = request.form['color']
@@ -330,7 +330,7 @@ def formAddGasto():
         if(request.files['foto'] !=''):
             file     = request.files['foto'] #recibiendo el archivo
             nuevoNombreFile = recibeFoto(file) #Llamado la funcion que procesa la imagen
-            resultData = registrarGasto(marca, modelo, year, color, puertas, favorito, nuevoNombreFile)
+            resultData = registrarGasto(turno, modelo, year, color, puertas, favorito, nuevoNombreFile)
             if(resultData ==1):
                 return render_template('layout2.html', miData = listaGastos(), msg='El Registro fue un éxito', tipo=1)
             else:
@@ -370,7 +370,7 @@ def viewDetalleGasto(idGasto):
 @app.route('/actualizar-gasto/<string:idGasto>', methods=['POST'])
 def  formActualizarGasto(idGasto):
     if request.method == 'POST':
-        marca           = request.form['marca']
+        turno           = request.form['turno']
         modelo          = request.form['modelo']
         year            = request.form['year']
         color           = request.form['color']
@@ -381,10 +381,10 @@ def  formActualizarGasto(idGasto):
         if(request.files['foto']):
             file     = request.files['foto']
             fotoForm = recibeFoto(file)
-            resultData = recibeActualizarGasto(marca, modelo, year, color, puertas, favorito, fotoForm, idGasto)
+            resultData = recibeActualizarGasto(turno, modelo, year, color, puertas, favorito, fotoForm, idGasto)
         else:
             fotoGasto  ='sin_foto.jpg'
-            resultData = recibeActualizarGasto(marca, modelo, year, color, puertas, favorito, fotoGasto, idGasto)
+            resultData = recibeActualizarGasto(turno, modelo, year, color, puertas, favorito, fotoGasto, idGasto)
 
         if(resultData ==1):
             return render_template('layout2.html', miData = listaGastos(), msg='Datos actualizados', tipo=1)

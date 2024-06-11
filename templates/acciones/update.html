@@ -17,8 +17,8 @@
         
         <div class="row">
             <div class="col">
-                <label for="marca">Marca</label>
-                <input type="text" name="marca" value="{{ dataInfo.marca }}" class="form-control">
+                <label for="turno">Turno</label>
+                <input type="text" name="turno" value="{{ dataInfo.turno }}" class="form-control">
             </div>
             <div class="col">
                 <label for="modelo">Modelo</label>
@@ -84,7 +84,7 @@
             {% set urlGasto = '/static/fotos_gastos/' %}
             <div class="col-md-6">
                 {% if(dataInfo.foto !="") %}
-                        <img src="{{ urlGasto }}{{ dataInfo.foto }}" class="foto_update" alt="{{ dataInfo.marca }}">
+                        <img src="{{ urlGasto }}{{ dataInfo.foto }}" class="foto_update" alt="{{ dataInfo.turno }}">
                     {% else %}
                         <img src="{{ urlGasto }}sin_foto.jpg" class="foto_update" alt="gasto">
                 {% endif %}

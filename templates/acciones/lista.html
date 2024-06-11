@@ -6,7 +6,7 @@
         <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Marca</th>
+                <th scope="col">Turno</th>
                 <th scope="col">Modelo</th>
                 <th scope="col">Año</th>
                 <th scope="col">Foto</th>
@@ -18,12 +18,12 @@
             {% with urlGasto = '/static/fotos_gastos/' %}
             <tr id="Registro_{{ gasto.id }}">
                 <th scope="row">{{ loop.index }}</th>
-                <td>{{ gasto.marca }}</td>
+                <td>{{ gasto.turno }}</td>
                 <td>{{ gasto.modelo }}</td>
                 <td>{{ gasto.year }}</td>
                 <td>
                     {% if(gasto.foto !="") %}
-                    <img src="{{ urlGasto }}{{ gasto.foto }}" class="sin_foto_mini" alt="{{ gasto.marca }}">
+                    <img src="{{ urlGasto }}{{ gasto.foto }}" class="sin_foto_mini" alt="{{ gasto.turno }}">
                     {% else %}
                     <img src="{{ urlGasto }}sin_foto.jpg" class="sin_foto_mini" alt="gasto">
                     {% endif %}
