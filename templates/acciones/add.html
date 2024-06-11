@@ -1,5 +1,5 @@
 {% extends 'layout2.html' %}
-{% block title %}Registrar Carro{% endblock %}
+{% block title %}Registrar Gasto{% endblock %}
 
 {% block body %}
 
@@ -7,11 +7,11 @@
 <section>
     <h2>
         <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
-        Registrar Nuevo Carro
+        Registrar Nuevo Gasto
         <hr>
     </h2>
 
-    <form action="{{ url_for('formAddCarro') }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
+    <form action="{{ url_for('formAddGasto') }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
         <div class="row">
             <div class="col">
                 <label for="marca">Marca</label>
@@ -71,7 +71,7 @@
 
         <div class="row mt-4">
             <div class="col">
-                <label for="foto">Foto del Carro</label>
+                <label for="foto">Foto del Gasto</label>
                 <input type="file" name="foto" class="form-control-file" accept="imgs/*" required>
             </div>
         </div>

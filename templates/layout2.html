@@ -31,7 +31,7 @@
 
     <div class="row">
       <div class="col-md-12">
-        <a href="{{ url_for('addCarro') }}" title="Registrar nuevo gasto"
+        <a href="{{ url_for('addGasto') }}" title="Registrar nuevo gasto"
           class="btn btn-primary btn-lg btn-block btn-sm mb-2" style="float:right">
           Nuevo Registro
         </a>
@@ -56,13 +56,13 @@
   <script src="{{ url_for('static', filename ='js/alerta.js') }}"></script>
   <script src="{{ url_for('static', filename ='js/loader.js') }}"></script>
   <script>
-    function eliminarCarroJavaScript(id) {
+    function eliminarGastoJavaScript(id) {
       const idR = document.querySelector('#id_'+ id);
       nombreFoto = idR.dataset.foto;
 
       let li = document.querySelector('#Registro_' + id);
 
-      var urlForm = "{{ url_for('formViewBorrarCarro') }}";
+      var urlForm = "{{ url_for('formViewBorrarGasto') }}";
       $.ajax({
         type: "POST",
         data: { id, nombreFoto },

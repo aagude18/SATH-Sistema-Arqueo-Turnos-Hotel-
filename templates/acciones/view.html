@@ -1,5 +1,5 @@
 {% extends 'layout2.html' %}
-{% block title %}Registrar Carro{% endblock %}
+{% block title %}Registrar Gasto{% endblock %}
 
 {% block body %}
 
@@ -7,40 +7,40 @@
 <section>
     <h2>
         <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
-        Detalles del Carro
+        Detalles del Gasto
         <hr>
     </h2>
 
-    {% if (infoCarro) %}
+    {% if (infoGasto) %}
     
-    <!-- {{ infoCarro }} -->
+    <!-- {{ infoGasto }} -->
 
 
     <div class="card" style="width: 25rem;">
-      {% set urlCarro = '/static/fotos_carros/' %}
-        {% if(infoCarro.foto) %}
-          <img src="{{ urlCarro }}{{ infoCarro.foto }}" class="card-img-top" alt="coche">
+      {% set urlGasto = '/static/fotos_gastos/' %}
+        {% if(infoGasto.foto) %}
+          <img src="{{ urlGasto }}{{ infoGasto.foto }}" class="card-img-top" alt="gasto">
         {% else %}
-          <img src="{{ urlCarro }}sin_foto.jpg" class="card-img-top sin_foto" alt="coche">
+          <img src="{{ urlGasto }}sin_foto.jpg" class="card-img-top sin_foto" alt="gasto">
         {% endif %}
 
         <div class="card-body">
-          <h5 class="card-title"> <strong>{{ infoCarro.marca }}</strong></h5>
+          <h5 class="card-title"> <strong>{{ infoGasto.marca }}</strong></h5>
         </div>
 
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">Modelo: <strong>{{ infoCarro.modelo }}</strong></li>
-          <li class="list-group-item">Año: <strong>{{ infoCarro.year }}</strong></li>
-          <li class="list-group-item">Color: <strong>{{ infoCarro.color }}</strong></li>
-          <li class="list-group-item">Número de puertas: <strong>{{ infoCarro.puertas }}</strong></li>
-          <li class="list-group-item">Favorito: <strong>{{ infoCarro.favorito }}</strong></li>
+          <li class="list-group-item">Modelo: <strong>{{ infoGasto.modelo }}</strong></li>
+          <li class="list-group-item">Año: <strong>{{ infoGasto.year }}</strong></li>
+          <li class="list-group-item">Color: <strong>{{ infoGasto.color }}</strong></li>
+          <li class="list-group-item">Número de puertas: <strong>{{ infoGasto.puertas }}</strong></li>
+          <li class="list-group-item">Favorito: <strong>{{ infoGasto.favorito }}</strong></li>
         </ul>
       </div>
 
       {% else %}
       <div class="col-12">
           <h2 class="text-center">
-              No existe el Coche
+              No existe el Gasto
           </h2>
       </div>
 {% endif %}

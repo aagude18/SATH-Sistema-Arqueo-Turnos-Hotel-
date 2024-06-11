@@ -3,12 +3,12 @@ from conexionBD import *  #Importando conexion BD
 
 
 
-#Creando una funcion para obtener la lista de carros.
-def listaCarros():
+#Creando una funcion para obtener la lista de gastos.
+def listaGastos():
     conexion_MySQLdb = connectionBD() #creando mi instancia a la conexion de BD
     cur      = conexion_MySQLdb.cursor(dictionary=True)
 
-    querySQL = "SELECT * FROM carros ORDER BY id DESC"
+    querySQL = "SELECT * FROM gastos ORDER BY id DESC"
     cur.execute(querySQL) 
     resultadoBusqueda = cur.fetchall() #fetchall () Obtener todos los registros
     totalBusqueda = len(resultadoBusqueda) #Total de busqueda
@@ -20,21 +20,21 @@ def listaCarros():
 
 
 
-def updateCarro(id=''):
+def updateGasto(id=''):
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM carros WHERE id = %s LIMIT 1", [id])
+        cursor.execute("SELECT * FROM gastos WHERE id = %s LIMIT 1", [id])
         resultQueryData = cursor.fetchone() #Devolviendo solo 1 registro
         return resultQueryData
     
     
     
-def registrarCarro(marca='', modelo='', year='', color='', puertas='', favorito='', nuevoNombreFile=''):       
+def registrarGasto(marca='', modelo='', year='', color='', puertas='', favorito='', nuevoNombreFile=''):       
         conexion_MySQLdb = connectionBD()
         cursor           = conexion_MySQLdb.cursor(dictionary=True)
             
-        sql         = ("INSERT INTO carros(marca, modelo, year, color, puertas, favorito, foto) VALUES (%s, %s, %s, %s, %s, %s, %s)")
+        sql         = ("INSERT INTO gastos(marca, modelo, year, color, puertas, favorito, foto) VALUES (%s, %s, %s, %s, %s, %s, %s)")
         valores     = (marca, modelo, year, color, puertas, favorito, nuevoNombreFile)
         cursor.execute(sql, valores)
         conexion_MySQLdb.commit()
@@ -46,11 +46,11 @@ def registrarCarro(marca='', modelo='', year='', color='', puertas='', favorito=
         return resultado_insert
   
 
-def detallesdelCarro(idCarro):
+def detallesdelGasto(idGasto):
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         
-        cursor.execute("SELECT * FROM carros WHERE id ='%s'" % (idCarro,))
+        cursor.execute("SELECT * FROM gastos WHERE id ='%s'" % (idGasto,))
         resultadoQuery = cursor.fetchone()
         cursor.close() #cerrando conexion de la consulta sql
         conexion_MySQLdb.close() #cerrando conexion de la BD
@@ -59,11 +59,11 @@ def detallesdelCarro(idCarro):
     
     
 
-def  recibeActualizarCarro(marca, modelo, year, color, puertas, favorito, nuevoNombreFile, idCarro):
+def  recibeActualizarGasto(marca, modelo, year, color, puertas, favorito, nuevoNombreFile, idGasto):
         conexion_MySQLdb = connectionBD()
         cur = conexion_MySQLdb.cursor(dictionary=True)
         cur.execute("""
-            UPDATE carros
+            UPDATE gastos
             SET 
                 marca   = %s,
                 modelo  = %s,
@@ -73,7 +73,7 @@ def  recibeActualizarCarro(marca, modelo, year, color, puertas, favorito, nuevoN
                 favorito= %s,
                 foto    = %s
             WHERE id=%s
-            """, (marca,modelo, year, color, puertas, favorito, nuevoNombreFile,  idCarro))
+            """, (marca,modelo, year, color, puertas, favorito, nuevoNombreFile,  idGasto))
         conexion_MySQLdb.commit()
         
         cur.close() #cerrando conexion de la consulta sql

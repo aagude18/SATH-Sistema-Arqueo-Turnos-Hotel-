@@ -1,5 +1,5 @@
 {% extends 'layout2.html' %}
-{% block title %}Registrar Carro{% endblock %}
+{% block title %}Registrar Gasto{% endblock %}
 
 {% block body %}
 
@@ -7,12 +7,12 @@
 <section>
     <h2>
         <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
-        Actualizar Información del Carro
+        Actualizar Información del Gasto
         <hr>
     </h2>
 
     {% if (dataInfo) %}
-      <form action="{{ url_for('formActualizarCarro', idCarro = dataInfo.id ) }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
+      <form action="{{ url_for('formActualizarGasto', idGasto = dataInfo.id ) }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
         <input type="text" class="form-control" name="id" value="{{ dataInfo.id }}" required hidden>
         
         <div class="row">
@@ -81,16 +81,16 @@
         </div>
 
         <div class="row">
-            {% set urlCarro = '/static/fotos_carros/' %}
+            {% set urlGasto = '/static/fotos_gastos/' %}
             <div class="col-md-6">
                 {% if(dataInfo.foto !="") %}
-                        <img src="{{ urlCarro }}{{ dataInfo.foto }}" class="foto_update" alt="{{ dataInfo.marca }}">
+                        <img src="{{ urlGasto }}{{ dataInfo.foto }}" class="foto_update" alt="{{ dataInfo.marca }}">
                     {% else %}
-                        <img src="{{ urlCarro }}sin_foto.jpg" class="foto_update" alt="coche">
+                        <img src="{{ urlGasto }}sin_foto.jpg" class="foto_update" alt="gasto">
                 {% endif %}
             </div>
             <div class="col-md-6">
-                <label for="foto">Cambiar Foto del Carro</label>
+                <label for="foto">Cambiar Foto del Gasto</label>
                 <input type="file" name="foto" class="form-control-file" accept="im/*">
             </div>
         </div>
@@ -101,7 +101,7 @@
       {% else %}
       <div class="col-12">
           <h2 class="text-center">
-              No existe el Coche
+              No existe el gasto
           </h2>
       </div>
 {% endif %}
