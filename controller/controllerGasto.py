@@ -30,12 +30,12 @@ def updateGasto(id=''):
     
     
     
-def registrarGasto(turno='', modelo='', year='', color='', puertas='', favorito='', nuevoNombreFile=''):       
+def registrarGasto(turno='', concepto='', valor='', color='', puertas='', favorito='', nuevoNombreFile=''):       
         conexion_MySQLdb = connectionBD()
         cursor           = conexion_MySQLdb.cursor(dictionary=True)
             
-        sql         = ("INSERT INTO gastos(turno, modelo, year, color, puertas, favorito, foto) VALUES (%s, %s, %s, %s, %s, %s, %s)")
-        valores     = (turno, modelo, year, color, puertas, favorito, nuevoNombreFile)
+        sql         = ("INSERT INTO gastos(turno, concepto, valor, color, puertas, favorito, foto) VALUES (%s, %s, %s, %s, %s, %s, %s)")
+        valores     = (turno, concepto, valor, color, puertas, favorito, nuevoNombreFile)
         cursor.execute(sql, valores)
         conexion_MySQLdb.commit()
         cursor.close() #Cerrando conexion SQL
@@ -59,21 +59,21 @@ def detallesdelGasto(idGasto):
     
     
 
-def  recibeActualizarGasto(turno, modelo, year, color, puertas, favorito, nuevoNombreFile, idGasto):
+def  recibeActualizarGasto(turno, concepto, valor, color, puertas, favorito, nuevoNombreFile, idGasto):
         conexion_MySQLdb = connectionBD()
         cur = conexion_MySQLdb.cursor(dictionary=True)
         cur.execute("""
             UPDATE gastos
             SET 
                 turno   = %s,
-                modelo  = %s,
-                year    = %s,
+                concepto  = %s,
+                valor    = %s,
                 color   = %s,
                 puertas = %s,
                 favorito= %s,
                 foto    = %s
             WHERE id=%s
-            """, (turno,modelo, year, color, puertas, favorito, nuevoNombreFile,  idGasto))
+            """, (turno,concepto, valor, color, puertas, favorito, nuevoNombreFile,  idGasto))
         conexion_MySQLdb.commit()
         
         cur.close() #cerrando conexion de la consulta sql

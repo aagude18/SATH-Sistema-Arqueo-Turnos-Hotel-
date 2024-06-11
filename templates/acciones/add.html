@@ -18,20 +18,15 @@
                 <input type="text" name="turno" class="form-control" required>
             </div>
             <div class="col">
-                <label for="modelo">Modelo</label>
-                <input type="text" name="modelo" class="form-control" required>
+                <label for="concepto">concepto</label>
+                <input type="text" name="concepto" class="form-control" required>
             </div>
         </div>
 
         <div class="row">
             <div class="col">
-                <label for="year">Año</label>
-                <select name="year" class="form-control" required>
-                    <option value="">--- Seleccione el año ---</option>
-                    {% for year in range(2022,2009,-1) %}
-                        <option value="{{ year }}"> {{ year }}</option>
-                    {% endfor %}
-                </select>
+                <label for="valor">Valor</label>
+                <input type="text" name="valor" class="form-control" placeholder="$" required>
             </div>
             <div class="col">
                 <label for="color">Color</label>
