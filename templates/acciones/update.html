@@ -33,51 +33,18 @@
             </div>
 
             <div class="col">
-                <label for="color">Color</label>
-                {% with  colores = ["Rojo","Gris","Blanco","Plata"] %}
-                <select name="color" class="form-control">
-                    {% for color in colores %}
-                        {% if(color == dataInfo.color) %}
-                            <option value="{{ color }}" selected>{{ color }}</option>
-                        {% else %}
-                            <option value="{{ color }}">{{ color }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                {% endwith %}
+                <label for="beneficiario">Beneficiario</label>
+                <input type="text" name="beneficiario" value="{{ dataInfo.beneficiario }}" class="form-control">
             </div>
         </div>
 
         
         <div class="row">
             <div class="col">
-                <label for="puertas">Numeros de Puertas</label>
-                {% with  puertas = ['2','4'] %}
-                <select name="puertas" class="form-control">
-                    {% for puerta in puertas %}
-                        {% if(puerta == dataInfo.puertas) %}
-                            <option value="{{ puerta }}" selected> {{ puerta }}</option>
-                        {% else %}
-                            <option value="{{ puerta }}"> {{ puerta }}</option>
-                        {% endif %}
-                    {% endfor %}
-                </select>
-                {% endwith %}
+                <label for="beneficiario">Responsable</label>
+                <input type="text" name="responsable" value="{{ dataInfo.responsable }}" class="form-control">
             </div>
 
-            <div class="col">
-                <label for="favorito">Favorito</label>
-                <br><br>
-                <div class="form-check form-check-inline">
-
-                    <input class="form-check-input" type="radio" name="favorito" value="Si" {{ dataInfo.favorito =='Si' and 'checked' or '' }}>
-                    <label class="form-check-label" for="favorito">Si</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="favorito" value="No" {{ 'checked' if dataInfo.favorito =='No' else '' }}>
-                    <label class="form-check-label" for="favorito">No</label>
-                </div>
-            </div>
         </div>
 
         <div class="row">
