@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for# Render Template es para redireccionar las rutas a los template HTML
+from flask import Flask, render_template, request,jsonify, redirect, url_for# Render Template es para redireccionar las rutas a los template HTML
 import os
-import src.database as db
+from src.database import mydb
 from datetime import datetime
 template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
@@ -10,7 +10,6 @@ app = Flask(__name__) # Inicia flask y lo almacena en una variable
 def int_a_pesos(monto_entero):
     return "${:,.2f}".format(monto_entero)
 
-# Routes to Render Something
 @app.route('/')
 def home():
     return render_template("login.html")
@@ -19,22 +18,26 @@ def home():
 def dashboard():
     return render_template("index.html")
 
-
-#RUTA PARA AGREGAR TURNO
+# Ruta para agregar turno
 @app.route('/add_turnos', methods=['POST'])
 def add_turnos():
     fecha_in = request.form['FechaIn']
     fecha_out = request.form['FechaOut']
     turno = request.form['Turno']
-    if turno and fecha_in and fecha_out:
-        cursor = db.mydb.cursor()
-        sql = "INSERT INTO turno (turno_cod, fecha_in, fecha_out) VALUES (%s, %s, %s)"
-        data = (turno, fecha_in, fecha_out)
-        cursor.execute(sql, data)
-        db.mydb.commit()
-    return redirect(url_for('dashboard'))
 
-#RUTA PARA AGREGAR ARQUEOS
+    if turno and fecha_in and fecha_out:
+        try:
+            cursor = mydb.cursor()
+            sql = "INSERT INTO turno (turno_cod, fecha_in, fecha_out) VALUES (%s, %s, %s)"
+            data = (turno, fecha_in, fecha_out)
+            cursor.execute(sql, data)
+            mydb.commit()
+            cursor.close()
+            return jsonify({'message': 'Turno creado exitosamente'}), 200
+        except Exception as e:
+            return jsonify({'message': 'Error al crear el turno', 'error': str(e)}), 500
+
+# Ruta para agregar arqueos
 @app.route('/add_arqueos', methods=['POST'])
 def add_arqueos():
     turno = request.form['Turno']
@@ -43,26 +46,28 @@ def add_arqueos():
     entregado = request.form['Entregado']
     entregadoM = request.form['EntregadoM']
     observacion = request.form['Observacion']
+    
     if turno and empleado and recibido and entregado and entregadoM:
-        cursor = db.mydb.cursor()
+        cursor = mydb.cursor()
         sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
         data = (turno, empleado, recibido, entregado, entregadoM, observacion)
         cursor.execute(sql, data)
-        db.mydb.commit()
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('dashboard'))
 
-#RUTA PARA BUSQUEDA DE ARQUEO 
+# Ruta para buscar arqueos
 @app.route('/search_arqueos', methods=['GET'])
 def search_arqueos():
     turno = request.args.get('Turno')
-    cur = db.mydb.cursor()
+    cursor = mydb.cursor()
     query = "SELECT * FROM arqueos WHERE turno_cod = %s"
-    cur.execute(query, (turno,))
-    filtered_data = cur.fetchall()
-    cur.close()
+    cursor.execute(query, (turno,))
+    filtered_data = cursor.fetchall()
+    cursor.close()
     return render_template('resultados_arqueo.html', data=filtered_data)
 
-# RUTA PARA EDITAR ARQUEO
+# Ruta para editar arqueo
 @app.route('/edit_arqueos/<string:id>', methods=['POST'])
 def edit_arqueos(id):
     empleado = request.form['Empleado']
@@ -70,25 +75,27 @@ def edit_arqueos(id):
     entregado = request.form['Entregado']
     entregadoM = request.form['EntregadoM']
     observacion = request.form['Observacion']
+    
     if empleado and recibido and entregado and entregadoM and observacion:
-        cursor = db.mydb.cursor()
-        sql = "UPDATE arqueos SET empleado =%s, base_recibida =%s, base_entregada =%s, entrega_caja_m =%s, observacion =%s WHERE Id =%s"
+        cursor = mydb.cursor()
+        sql = "UPDATE arqueos SET empleado = %s, base_recibida = %s, base_entregada = %s, entrega_caja_m = %s, observacion = %s WHERE Id = %s"
         data = (empleado, recibido, entregado, entregadoM, observacion, id)
         cursor.execute(sql, data)
-        db.mydb.commit()
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('dashboard'))
 
-#RUTA PARA ELIMINAR ARQUEO
+# Ruta para eliminar arqueo
 @app.route('/delete_arqueos/<string:id>')
 def delete_arqueos(id):
-    cursor = db.mydb.cursor()
-    sql = "DELETE FROM arqueos WHERE id=%s"
-    data = (id,)
-    cursor.execute(sql, data)
-    db.mydb.commit()
+    cursor = mydb.cursor()
+    sql = "DELETE FROM arqueos WHERE id = %s"
+    cursor.execute(sql, (id,))
+    mydb.commit()
+    cursor.close()
     return redirect(url_for('dashboard'))
 
-#RUTA PARA AGREGAR VENTA
+# Ruta para agregar venta
 @app.route('/add_ventas', methods=['POST'])
 def add_ventas():
     turno = request.form['Turno']
@@ -96,15 +103,17 @@ def add_ventas():
     efectivo = request.form['Efectivo']
     datafono = request.form['Datafono']
     otros = request.form['Otros']
+    
     if turno and concepto and efectivo and datafono and otros:
-        cursor = db.mydb.cursor()
+        cursor = mydb.cursor()
         sql = "INSERT INTO ventas (turno_cod, concepto, efectivo, datafono, otros) VALUES (%s, %s, %s, %s, %s)"
-        data_ventas = (turno, concepto, efectivo, datafono, otros)
-        cursor.execute(sql, data_ventas)
-        db.mydb.commit()
+        data = (turno, concepto, efectivo, datafono, otros)
+        cursor.execute(sql, data)
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('dashboard'))
 
-#RUTA PARA AGREGAR GASTO
+# Ruta para agregar gasto
 @app.route('/add_gastos', methods=['POST'])
 def add_gastos():
     turno = request.form['Turno']
@@ -112,55 +121,55 @@ def add_gastos():
     beneficiario = request.form['Beneficiario']
     concepto = request.form['Concepto']
     valor = request.form['Valor']
+    
     if turno and responsable and beneficiario and concepto and valor:
-        cursor = db.mydb.cursor()
+        cursor = mydb.cursor()
         sql = "INSERT INTO gastos (turno_cod, responsable, beneficiario, concepto, valor_pagado) VALUES (%s, %s, %s, %s, %s)"
-        data_gastos = (turno, responsable, beneficiario, concepto, valor)
-        cursor.execute(sql, data_gastos)
-        db.mydb.commit()
+        data = (turno, responsable, beneficiario, concepto, valor)
+        cursor.execute(sql, data)
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('home'))
 
-#Ruta para la busqueda de Gastos 
+# Ruta para buscar gastos
 @app.route('/search_gastos', methods=['GET'])
 def search_gastos():
     turno_gasto = request.args.get('Turno')
-    cur = db.mydb.cursor()
+    cursor = mydb.cursor()
     query = "SELECT * FROM gastos WHERE turno_cod = %s"
-    cur.execute(query, (turno_gasto,))
-    filtered_data = cur.fetchall()
-    cur2 = db.mydb.cursor(dictionary=True)
-    cur2.execute(query, (turno_gasto,))
-    filtered_data2 = cur2.fetchall()
-    cur.close()
-    cur2.close()
+    cursor.execute(query, (turno_gasto,))
+    filtered_data = cursor.fetchall()
+    cursor.close()
+
+    cursor2 = mydb.cursor(dictionary=True)
+    cursor2.execute(query, (turno_gasto,))
+    filtered_data2 = cursor2.fetchall()
+    cursor2.close()
+
     suma_valor = 0
     suma_total = 0
     for fila in filtered_data2:
-        # Suponiendo que la columna que deseas sumar se llama 'valor'
         suma_valor += int(fila['valor_pagado'])
         suma_total = int_a_pesos(suma_valor)
+    
     return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
 
-#Ruta para la busqueda de Ventas 
+# Ruta para buscar ventas
 @app.route('/search_ventas', methods=['GET'])
 def search_ventas():
     turno_venta = request.args.get('Turno')
-    cur = db.mydb.cursor()
+    cursor = mydb.cursor()
     query = "SELECT * FROM ventas WHERE turno_cod = %s"
-    cur.execute(query, (turno_venta,))
-    filtered_data = cur.fetchall()
-    cur.close()
-
-    # Print para verificar los datos recuperados
-    print(filtered_data if filtered_data else "[]")
-    print(turno_venta);
+    cursor.execute(query, (turno_venta,))
+    filtered_data = cursor.fetchall()
+    cursor.close()
 
     if filtered_data:
-        cur2 = db.mydb.cursor(dictionary=True)
-        cur2.execute(query, (turno_venta,))
-        filtered_data2 = cur2.fetchall()
-        cur2.close()
-        
+        cursor2 = mydb.cursor(dictionary=True)
+        cursor2.execute(query, (turno_venta,))
+        filtered_data2 = cursor2.fetchall()
+        cursor2.close()
+
         suma_valor_efectivo = 0
         suma_total_efectivo = 0
         suma_valor_datafono = 0
@@ -177,47 +186,45 @@ def search_ventas():
 
         return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
     else:
-        suma_total_efectivo = suma_total_datafono = suma_total_otros = 0
-        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=0, suma_total_datafono=0, suma_total_otros=0)
 
-
-
-
-# Ruta para guardar Usuarios en La BD
+# Ruta para agregar usuario
 @app.route('/user', methods=['POST'])
 def addUser():
     username = request.form['Username']
     name = request.form['Name']
     password = request.form['Password']
+    
     if username and name and password:
-        cursor = db.mydb.cursor()
+        cursor = mydb.cursor()
         sql = "INSERT INTO users (Username, Firstname, Passw) VALUES (%s, %s, %s)"
         data = (username, name, password)
         cursor.execute(sql, data)
-        db.mydb.commit()
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('home'))
 
-#Ruta Para Eliminar
+# Ruta para eliminar usuario
 @app.route('/delete/<string:id>')
 def delete(id):
-    cursor = db.mydb.cursor()
-    sql = "DELETE FROM arqueo WHERE id=%s"
-    data = (id,)
-    cursor.execute(sql, data)
-    db.mydb.commit()
+    cursor = mydb.cursor()
+    sql = "DELETE FROM arqueo WHERE id = %s"
+    cursor.execute(sql, (id,))
+    mydb.commit()
+    cursor.close()
     return redirect(url_for('dashboard'))
 
-#Ruta para Eliminar en tabla de Gastos
+# Ruta para eliminar gasto
 @app.route('/delete_gastos/<string:id>')
 def delete_gastos(id):
-    cursor = db.mydb.cursor()
-    sql = "DELETE FROM gastos WHERE id=%s"
-    data_gastos = (id,)
-    cursor.execute(sql, data_gastos)
-    db.mydb.commit()
+    cursor = mydb.cursor()
+    sql = "DELETE FROM gastos WHERE id = %s"
+    cursor.execute(sql, (id,))
+    mydb.commit()
+    cursor.close()
     return redirect(url_for('dashboard'))
 
-#Ruta Para Editar
+# Ruta para editar arqueo
 @app.route('/edit/<string:id>', methods=['POST'])
 def edit(id):
     turno = request.form['Turno']
@@ -231,14 +238,15 @@ def edit(id):
     gastos = request.form['Gastos']
 
     if empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
-        cursor = db.mydb.cursor()
-        sql = "UPDATE arqueo SET turno_cod =%s, empleado =%s, base_recibida =%s, efectivo =%s, datafono =%s, otros =%s, gastos =%s, base_entregada =%s, entrega_caja_m =%s WHERE Id =%s"
+        cursor = mydb.cursor()
+        sql = "UPDATE arqueo SET turno_cod = %s, empleado = %s, base_recibida = %s, efectivo = %s, datafono = %s, otros = %s, gastos = %s, base_entregada = %s, entrega_caja_m = %s WHERE Id = %s"
         data = (turno, empleado, recibido, efectivo, datafono, otros, gastos, entregado, entregadoM, id)
         cursor.execute(sql, data)
-        db.mydb.commit()
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('home'))
 
-# Ruta para Editar Gastos
+# Ruta para editar gasto
 @app.route('/edit_gastos/<string:id>', methods=['POST'])
 def edit_gastos(id):
     turno = request.form['Turno']
@@ -246,14 +254,15 @@ def edit_gastos(id):
     beneficiario = request.form['Beneficiario']
     concepto = request.form['Concepto']
     valor = request.form['Valor']
+    
     if turno and empleado and beneficiario and concepto and valor:
-        cursor = db.mydb.cursor()
-        sql = "UPDATE gastos SET turno_cod =%s, responsable =%s, beneficiario =%s, concepto =%s, valor_pagado =%s WHERE Id =%s"
-        data_gastos = (turno, empleado, beneficiario, concepto, valor, id)
-        cursor.execute(sql, data_gastos)
-        db.mydb.commit()
+        cursor = mydb.cursor()
+        sql = "UPDATE gastos SET turno_cod = %s, responsable = %s, beneficiario = %s, concepto = %s, valor_pagado = %s WHERE Id = %s"
+        data = (turno, empleado, beneficiario, concepto, valor, id)
+        cursor.execute(sql, data)
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('home'))
-
 
 @app.route('/enlaces', strict_slashes=False)
 def enlaces():
@@ -263,7 +272,7 @@ def enlaces():
 def homee():
     return render_template("homee.html")
 
-#Nuevas Rutas
+# Ruta para agregar usuario con más campos
 @app.route('/user2', methods=['POST'])
 def addUser2():
     fecha_inicio = request.form['FechaIn']
@@ -278,15 +287,16 @@ def addUser2():
     entregadoM = request.form['EntregadoM']
     gastos = request.form['Gastos']
     observacion = request.form['Observacion']
+    
     if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
-        cursor = db.mydb.cursor()
+        cursor = mydb.cursor()
         sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (fecha_inicio, fecha_fin, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion,)
+        data = (fecha_inicio, fecha_fin, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion)
         cursor.execute(sql, data)
-        db.mydb.commit()
+        mydb.commit()
+        cursor.close()
     return redirect(url_for('home'))
 
-
-# Make sure this we are executing this file
+# Inicia la aplicación Flask
 if __name__ == '__main__':
     app.run(debug=True)
