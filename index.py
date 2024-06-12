@@ -36,6 +36,8 @@ def add_turnos():
             return jsonify({'message': 'Turno creado exitosamente'}), 200
         except Exception as e:
             return jsonify({'message': 'Error al crear el turno', 'error': str(e)}), 500
+        
+
 
 # Ruta para agregar arqueos
 @app.route('/add_arqueos', methods=['POST'])
@@ -56,34 +58,41 @@ def add_arqueos():
         cursor.close()
     return redirect(url_for('dashboard'))
 
-# Ruta para buscar arqueos
-@app.route('/search_arqueos', methods=['GET'])
-def search_arqueos():
-    turno = request.args.get('Turno')
-    cursor = mydb.cursor()
-    query = "SELECT * FROM arqueos WHERE turno_cod = %s"
-    cursor.execute(query, (turno,))
-    filtered_data = cursor.fetchall()
-    cursor.close()
-    return render_template('resultados_arqueo.html', data=filtered_data)
-
-# Ruta para editar arqueo
-@app.route('/edit_arqueos/<string:id>', methods=['POST'])
-def edit_arqueos(id):
-    empleado = request.form['Empleado']
-    recibido = request.form['Recibido']
-    entregado = request.form['Entregado']
-    entregadoM = request.form['EntregadoM']
-    observacion = request.form['Observacion']
     
-    if empleado and recibido and entregado and entregadoM and observacion:
-        cursor = mydb.cursor()
-        sql = "UPDATE arqueos SET empleado = %s, base_recibida = %s, base_entregada = %s, entrega_caja_m = %s, observacion = %s WHERE Id = %s"
-        data = (empleado, recibido, entregado, entregadoM, observacion, id)
-        cursor.execute(sql, data)
-        mydb.commit()
-        cursor.close()
-    return redirect(url_for('dashboard'))
+#Ruta para buscar todo
+@app.route('/search_all', methods=['GET'])
+def search_all():
+    turno = request.args.get('Turno')
+    
+    # Buscar arqueos
+    cursor_arqueos = mydb.cursor(dictionary=True)
+    query_arqueos = "SELECT * FROM arqueos WHERE turno_cod = %s"
+    cursor_arqueos.execute(query_arqueos, (turno,))
+    arqueos_data = cursor_arqueos.fetchall()
+    cursor_arqueos.close()
+    
+    # Buscar ventas
+    cursor_ventas = mydb.cursor(dictionary=True)
+    query_ventas = "SELECT * FROM ventas WHERE turno_cod = %s"
+    cursor_ventas.execute(query_ventas, (turno,))
+    ventas_data = cursor_ventas.fetchall()
+    cursor_ventas.close()
+
+    # Buscar gastos
+    cursor_gastos = mydb.cursor(dictionary=True)
+    query_gastos = "SELECT * FROM gastos WHERE turno_cod = %s"
+    cursor_gastos.execute(query_gastos, (turno,))
+    gastos_data = cursor_gastos.fetchall()
+    cursor_gastos.close()
+
+    return jsonify({
+        'arqueos': arqueos_data,
+        'ventas': ventas_data,
+        'gastos': gastos_data
+    })
+
+
+
 
 # Ruta para eliminar arqueo
 @app.route('/delete_arqueos/<string:id>')
@@ -131,62 +140,8 @@ def add_gastos():
         cursor.close()
     return redirect(url_for('home'))
 
-# Ruta para buscar gastos
-@app.route('/search_gastos', methods=['GET'])
-def search_gastos():
-    turno_gasto = request.args.get('Turno')
-    cursor = mydb.cursor()
-    query = "SELECT * FROM gastos WHERE turno_cod = %s"
-    cursor.execute(query, (turno_gasto,))
-    filtered_data = cursor.fetchall()
-    cursor.close()
 
-    cursor2 = mydb.cursor(dictionary=True)
-    cursor2.execute(query, (turno_gasto,))
-    filtered_data2 = cursor2.fetchall()
-    cursor2.close()
 
-    suma_valor = 0
-    suma_total = 0
-    for fila in filtered_data2:
-        suma_valor += int(fila['valor_pagado'])
-        suma_total = int_a_pesos(suma_valor)
-    
-    return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
-
-# Ruta para buscar ventas
-@app.route('/search_ventas', methods=['GET'])
-def search_ventas():
-    turno_venta = request.args.get('Turno')
-    cursor = mydb.cursor()
-    query = "SELECT * FROM ventas WHERE turno_cod = %s"
-    cursor.execute(query, (turno_venta,))
-    filtered_data = cursor.fetchall()
-    cursor.close()
-
-    if filtered_data:
-        cursor2 = mydb.cursor(dictionary=True)
-        cursor2.execute(query, (turno_venta,))
-        filtered_data2 = cursor2.fetchall()
-        cursor2.close()
-
-        suma_valor_efectivo = 0
-        suma_total_efectivo = 0
-        suma_valor_datafono = 0
-        suma_total_datafono = 0
-        suma_valor_otros = 0
-        suma_total_otros = 0
-        for fila in filtered_data2:
-            suma_valor_efectivo += int(fila['efectivo'])
-            suma_total_efectivo = int_a_pesos(suma_valor_efectivo)
-            suma_valor_datafono += int(fila['datafono'])
-            suma_total_datafono = int_a_pesos(suma_valor_datafono)
-            suma_valor_otros += int(fila['otros'])
-            suma_total_otros = int_a_pesos(suma_valor_otros)
-
-        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
-    else:
-        return render_template('resultados_ventas.html', data_ventas=filtered_data, suma_total_efectivo=0, suma_total_datafono=0, suma_total_otros=0)
 
 # Ruta para agregar usuario
 @app.route('/user', methods=['POST'])

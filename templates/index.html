@@ -45,7 +45,7 @@
     <div class="container">
         <div class="card shadow" >
             <div class="card-body">
-                <form action="/add_arqueos" method="POST">
+                <form id="add_arqueo">
                     <div class="row mb-3">
                         <div class="col">
                             <label >Código del Turno <span style="color: red;">*</span></label>
@@ -85,20 +85,8 @@
                         </div>
                     </div>
                 </form>
-                <!-- Tabla de resultados -->
-                <form id="search_arqueos">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno" id="turno_arqueo" placeholder="Ingrese código del turno">
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalVentas">Agregar Ventas</button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
-                        </div>
-                    </div>
-                </form>
+                
+                
                 <!--MODAL VENTAS-->
                 <div class="modal fade modal-lg" id="modalVentas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -185,35 +173,32 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL GASTOS-->
-                <div id="arqueoresult">
-                    {% block resultados_arqueo %}{% endblock %}
-                </div>
+                
             </div>
         </div>
     </div>
     <!--FIN SEGUNDO CONTAINER-->
     <!--TERCER CONTAINER-->
     <div class="container">
-        <div class="card shadow" >
+        <div class="card shadow">
             <div class="card-body">
-                <form id="search_ventas">
+                <form id="search_form">
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" id="turnoInput" name="Turno" placeholder="Ingrese código del turno">
+                            <label for="search_turno">Buscar Código del Turno:</label>
+                            <input type="text" class="form-control" id="search_turno" name="Turno" required>
                         </div>
                         <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                            <button class="btn btn-primary mt-4" type="submit">Buscar</button>
                         </div>
                     </div>
                 </form>
-                <!-- Tabla de resultados -->
-                    <div id="ventasresult">
-                        {% block resultados_ventas %}{% endblock %}
-                    </div>
+                <div id="resultados" class="mt-4">
+                    <!-- Aquí se renderizarán los resultados -->
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <!--FON DE TERCER CONTAINER-->
     <div class="container-fluid py-4 px-sm-3 px-md-5">
