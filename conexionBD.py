@@ -7,7 +7,7 @@ def connectionBD():
         host ="localhost",
         user ="root",
         passwd ="admin",
-        database = "crud_flask_python"
+        database = "evidencias"
         )
     if mydb:
         print ("Conexion exitosa a BD")
