@@ -1,0 +1,62 @@
+
+<!-- {{ miData }} -->
+{% if (miData) %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Turno</th>
+                <th scope="col">Concepto</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Foto</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gasto in miData %}
+            {% with urlGasto = '/static/fotos_gastos/' %}
+            <tr id="Registro_{{ gasto.id }}">
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ gasto.turno }}</td>
+                <td>{{ gasto.concepto }}</td>
+                <td>{{ gasto.valor }}</td>
+                <td>
+                    {% if(gasto.foto !="") %}
+                    <img src="{{ urlGasto }}{{ gasto.foto }}" class="sin_foto_mini" alt="{{ gasto.turno }}">
+                    {% else %}
+                    <img src="{{ urlGasto }}sin_foto.jpg" class="sin_foto_mini" alt="gasto">
+                    {% endif %}
+                </td>
+                <td width="300">
+                    <span style="display: flex; justify-content:space-between;">
+                        <a href="{{ url_for('viewDetalleGasto', idGasto = gasto.id ) }}" type="button"
+                            class="btn btn-warning btn-sm" tooltip="Ver Registro">
+                            <i class="bi bi-eye"></i>
+                            Ver
+                        </a>
+                        <a href="{{ url_for('formViewUpdate', id = gasto.id ) }}" class="btn btn-info btn-sm"
+                            tooltip="Actualizar Registro">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Actualizar
+                        </a>
+                        <a href="#" id="id_{{ gasto.id }}" data-foto="{{ gasto.foto }}" onclick="eliminarGastoJavaScript('{{ gasto.id }}');" class="btn btn-danger btn-sm"
+                            tooltip="Eliminar Registro">
+                            <i class="bi bi-trash3"></i>
+                            Eliminar
+                        </a>
+                    </span>
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="row mb-5">
+    <div class="col-md-12">
+        <h3 class="text-center">No hay Gastos</h3>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,56 @@
+{% extends 'layout2.html' %}
+{% block title %}Registrar Gasto{% endblock %}
+
+{% block body %}
+
+
+<section>
+    <h2>
+        <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
+        Registrar Nuevo Gasto
+        <hr>
+    </h2>
+
+    <form action="{{ url_for('formAddGasto') }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col">
+                <label for="turno">Turno</label>
+                <input type="text" name="turno" class="form-control" required>
+            </div>
+            <div class="col">
+                <label for="concepto">concepto</label>
+                <input type="text" name="concepto" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="valor">Valor</label>
+                <input type="text" name="valor" class="form-control" placeholder="$" required>
+            </div>
+            <div class="col">
+                <label for="beneficiario">Beneficiario</label>
+                <input type="text" name="beneficiario" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="responsable">Responsable</label>
+                <input type="text" name="responsable" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col">
+                <label for="foto">Foto del Gasto</label>
+                <input type="file" name="foto" class="form-control-file" accept="imgs/*" required>
+            </div>
+        </div>
+        <hr>
+
+        <input class="button-primary mt-3 btn btn-info btn-block bold" type="submit" value="Guardar Registro">
+    </form>
+</section>
+
+{% endblock %}

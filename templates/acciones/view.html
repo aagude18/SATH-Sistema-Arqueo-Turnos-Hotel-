@@ -1,0 +1,49 @@
+{% extends 'layout2.html' %}
+{% block title %}Registrar Gasto{% endblock %}
+
+{% block body %}
+
+
+<section>
+    <h2>
+        <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
+        Detalles del Gasto
+        <hr>
+    </h2>
+
+    {% if (infoGasto) %}
+    
+    <!-- {{ infoGasto }} -->
+
+
+    <div class="card" style="width: 25rem;">
+      {% set urlGasto = '/static/fotos_gastos/' %}
+        {% if(infoGasto.foto) %}
+          <img src="{{ urlGasto }}{{ infoGasto.foto }}" class="card-img-top" alt="gasto">
+        {% else %}
+          <img src="{{ urlGasto }}sin_foto.jpg" class="card-img-top sin_foto" alt="gasto">
+        {% endif %}
+
+        <div class="card-body">
+          <h5 class="card-title"> <strong>{{ infoGasto.turno }}</strong></h5>
+        </div>
+
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Concepto: <strong>{{ infoGasto.concepto }}</strong></li>
+          <li class="list-group-item">Valor: <strong>{{ infoGasto.valor }}</strong></li>
+          <li class="list-group-item">Benefificario: <strong>{{ infoGasto.beneficiario }}</strong></li>
+          <li class="list-group-item">Responsable: <strong>{{ infoGasto.responsable }}</strong></li>
+        </ul>
+      </div>
+
+      {% else %}
+      <div class="col-12">
+          <h2 class="text-center">
+              No existe el Gasto
+          </h2>
+      </div>
+{% endif %}
+
+</section>
+
+{% endblock %}

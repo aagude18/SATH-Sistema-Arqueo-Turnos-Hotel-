@@ -1,0 +1,78 @@
+{% extends 'layout2.html' %}
+{% block title %}Registrar Gasto{% endblock %}
+
+{% block body %}
+
+
+<section>
+    <h2>
+        <a href="/" class="left" title="Volver"><i class="bi bi-arrow-left-circle"></i></a>
+        Actualizar Información del Gasto
+        <hr>
+    </h2>
+
+    {% if (dataInfo) %}
+      <form action="{{ url_for('formActualizarGasto', idGasto = dataInfo.id ) }}" method="POST" class="mb-3" autocomplete="off" enctype="multipart/form-data">
+        <input type="text" class="form-control" name="id" value="{{ dataInfo.id }}" required hidden>
+        
+        <div class="row">
+            <div class="col">
+                <label for="turno">Turno</label>
+                <input type="text" name="turno" value="{{ dataInfo.turno }}" class="form-control">
+            </div>
+            <div class="col">
+                <label for="concepto">Concepto</label>
+                <input type="text" name="concepto" value="{{ dataInfo.concepto }}" class="form-control">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <label for="valor">Valor</label>
+                <input type="number" name="valor" value="{{ dataInfo.valor }}" class="form-control">
+            </div>
+
+            <div class="col">
+                <label for="beneficiario">Beneficiario</label>
+                <input type="text" name="beneficiario" value="{{ dataInfo.beneficiario }}" class="form-control">
+            </div>
+        </div>
+
+        
+        <div class="row">
+            <div class="col">
+                <label for="beneficiario">Responsable</label>
+                <input type="text" name="responsable" value="{{ dataInfo.responsable }}" class="form-control">
+            </div>
+
+        </div>
+
+        <div class="row">
+            {% set urlGasto = '/static/fotos_gastos/' %}
+            <div class="col-md-6">
+                {% if(dataInfo.foto !="") %}
+                        <img src="{{ urlGasto }}{{ dataInfo.foto }}" class="foto_update" alt="{{ dataInfo.turno }}">
+                    {% else %}
+                        <img src="{{ urlGasto }}sin_foto.jpg" class="foto_update" alt="gasto">
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label for="foto">Cambiar Foto del Gasto</label>
+                <input type="file" name="foto" class="form-control-file" accept="im/*">
+            </div>
+        </div>
+        <hr>
+        <input class="button-primary mt-3 btn btn-info btn-block bold" type="submit" value="Guardar Actualización">
+    </form>
+
+      {% else %}
+      <div class="col-12">
+          <h2 class="text-center">
+              No existe el gasto
+          </h2>
+      </div>
+{% endif %}
+
+</section>
+
+{% endblock %}

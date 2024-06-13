@@ -1,15 +1,41 @@
-from flask import Flask, render_template, request,jsonify, redirect, url_for# Render Template es para redireccionar las rutas a los template HTML
+from flask import Flask, render_template, request, redirect, jsonify, url_for# Render Template es para redireccionar las rutas a los template HTML
+from random import sample
+from controller.controllerGasto import *
+from werkzeug.utils import secure_filename 
+from werkzeug.utils import secure_filename 
 import os
-from src.database import mydb
+from os import remove
+from os import path
+import src.database as mydb
 from datetime import datetime
 template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
 app = Flask(__name__) # Inicia flask y lo almacena en una variable
 
+application = app
+
+msg  =''
+tipo =''
+
 #CONVERSIÓN DE FORMATO DE PESOS
 def int_a_pesos(monto_entero):
     return "${:,.2f}".format(monto_entero)
 
+def stringAleatorio():
+    #Generando string aleatorio
+    string_aleatorio = "0123456789abcdefghijklmnopqrstuvwxyz_"
+    longitud         = 20
+    secuencia        = string_aleatorio.upper()
+    resultado_aleatorio  = sample(secuencia, longitud)
+    string_aleatorio     = "".join(resultado_aleatorio)
+    return string_aleatorio
+
+#Funcion que recorre todos los archivos almacenados en la carpeta (archivos)  
+def listaArchivos():
+    urlFiles = 'static/archivos'
+    return (os.listdir(urlFiles))
+
+# Routes to Render Something
 @app.route('/')
 def home():
     return render_template("login.html")
@@ -147,27 +173,23 @@ def add_gastos():
         mydb.commit()
         cursor.close()
     return redirect(url_for('home'))
+ 
 
-
-
-
-# Ruta para agregar usuario
+# Ruta para guardar Usuarios en La BD
 @app.route('/user', methods=['POST'])
 def addUser():
     username = request.form['Username']
     name = request.form['Name']
     password = request.form['Password']
-    
     if username and name and password:
         cursor = mydb.cursor()
         sql = "INSERT INTO users (Username, Firstname, Passw) VALUES (%s, %s, %s)"
         data = (username, name, password)
         cursor.execute(sql, data)
         mydb.commit()
-        cursor.close()
     return redirect(url_for('home'))
 
-# Ruta para eliminar usuario
+#Ruta Para Eliminar
 @app.route('/delete/<string:id>')
 def delete(id):
     cursor = mydb.cursor()
@@ -209,7 +231,7 @@ def edit(id):
         cursor.close()
     return redirect(url_for('home'))
 
-# Ruta para editar gasto
+# Ruta para Editar Gastos
 @app.route('/edit_gastos/<string:id>', methods=['POST'])
 def edit_gastos(id):
     turno = request.form['Turno']
@@ -231,34 +253,197 @@ def edit_gastos(id):
 def enlaces():
     return render_template("enlaces.html")
 
-@app.route('/homee', strict_slashes=False)
-def homee():
-    return render_template("homee.html")
+@app.route('/guardar-foto', methods=['GET', 'POST'])
+def registarArchivo():
+        if request.method == 'POST':
+            if(request.files['archivo']):
+                #Script para archivo
+                file     = request.files['archivo']
+                basepath = path.dirname (__file__) #La ruta donde se encuentra el archivo actual
+                filename = secure_filename(file.filename) #Nombre original del archivo
+                
+                #capturando extensión del archivo ejemplo: (.png, .jpg, .pdf ...etc)
+                extension           = path.splitext(filename)[1]
+                nuevoNombreFile     = stringAleatorio() + extension
+                 
+                upload_path = path.join (basepath, 'static/archivos', nuevoNombreFile) 
+                file.save(upload_path)
+        return render_template('index.html', list_Photos = listaArchivos())
 
-# Ruta para agregar usuario con más campos
-@app.route('/user2', methods=['POST'])
-def addUser2():
-    fecha_inicio = request.form['FechaIn']
-    fecha_fin = request.form['FechaOut']
-    turno = request.form['Turno']
-    empleado = request.form['Empleado']
-    recibido = request.form['Recibido']
-    efectivo = request.form['Efectivo']
-    datafono = request.form['Datafono']
-    otros = request.form['OtrosMedios']
-    entregado = request.form['Entregado']
-    entregadoM = request.form['EntregadoM']
-    gastos = request.form['Gastos']
-    observacion = request.form['Observacion']
+@app.route('/<string:nombreFoto>', methods=['GET','POST'])
+def EliminarFoto(nombreFoto=''):
+    if request.method == 'GET':
+        #print(nombreFoto) #Nombre del archivo subido
+        basepath = path.dirname (__file__) #C:\xampp\htdocs\elmininar-archivos-con-Python-y-Flask\app
+        url_File = path.join (basepath, 'static/archivos', nombreFoto)
+        #print(url_File)
+        
+        #verifcando si existe el archivo, con la funcion (path.exists) antes de de llamar remove 
+        # para eliminarlo, con el fin de evitar un error si no existe.
+        if path.exists(url_File):
+            remove(url_File) #Borrar foto desde la carpeta
+            #os.unlink(url_File) #Otra forma de borrar archivos en una carpeta
+    return render_template('index.html', list_Photos = listaArchivos())
+        
     
-    if fecha_inicio and fecha_fin and turno and empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
-        cursor = mydb.cursor()
-        sql = "INSERT INTO arqueo (fecha_in, fecha_out, turno_cod, empleado, base_recibida, efectivo, datafono, otros, base_entregada, entrega_caja_m, gastos, observacion) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        data = (fecha_inicio, fecha_fin, turno, empleado, recibido, efectivo, datafono, otros, entregado, entregadoM, gastos, observacion)
-        cursor.execute(sql, data)
-        mydb.commit()
-        cursor.close()
-    return redirect(url_for('home'))
+#Redireccionando cuando la página no existe
+@app.errorhandler(404)
+def not_found(error):
+    return 'Ruta no encontrada'
+
+
+#Creando mi decorador para el home, el cual retornara la Lista de Gastos
+@app.route('/evidencia', methods=['GET','POST'])
+def inicio():
+    return render_template('layout2.html', miData = listaGastos())
+
+
+#RUTAS
+@app.route('/registrar-Gasto', methods=['GET','POST'])
+def addGasto():
+    return render_template('acciones/add.html')
+
+
+ 
+#Registrando nuevo gasto
+@app.route('/gasto', methods=['POST'])
+def formAddGasto():
+    if request.method == 'POST':
+        turno               = request.form['turno']
+        concepto            = request.form['concepto']
+        valor               = request.form['valor']
+        beneficiario        = request.form['beneficiario']
+        responsable         = request.form['responsable']
+        if(request.files['foto'] !=''):
+            file     = request.files['foto'] #recibiendo el archivo
+            nuevoNombreFile = recibeFoto(file) #Llamado la funcion que procesa la imagen
+            resultData = registrarGasto(turno, concepto, valor, beneficiario, responsable, nuevoNombreFile)
+            if(resultData ==1):
+                return render_template('layout2.html', miData = listaGastos(), msg='El Registro fue un éxito', tipo=1)
+            else:
+                return render_template('layout2.html', miData = listaGastos(), msg='El Registro fue un éxito', tipo=1)
+                #return render_template('layout2.html', msg = 'Metodo HTTP incorrecto', tipo=1)   
+        else:
+            return render_template('layout2.html', msg = 'Debe cargar una foto', tipo=1)
+            
+
+
+@app.route('/form-update-gasto/<string:id>', methods=['GET','POST'])
+def formViewUpdate(id):
+    if request.method == 'GET':
+        resultData = updateGasto(id)
+        if resultData:
+            return render_template('acciones/update.html',  dataInfo = resultData)
+        else:
+            return render_template('layout2.html', miData = listaGastos(), msg='No existe el gasto', tipo= 1)
+    else:
+        return render_template('layout2.html', miData = listaGastos(), msg = 'Metodo HTTP incorrecto', tipo=1)          
+ 
+   
+  
+@app.route('/ver-detalles-del-gasto/<int:idGasto>', methods=['GET', 'POST'])
+def viewDetalleGasto(idGasto):
+    msg =''
+    if request.method == 'GET':
+        resultData = detallesdelGasto(idGasto) #Funcion que almacena los detalles del gasto
+        
+        if resultData:
+            return render_template('acciones/view.html', infoGasto = resultData, msg='Detalles del Gasto', tipo=1)
+        else:
+            return render_template('acciones/layout2.html', msg='No existe el registro', tipo=1)
+    return redirect(url_for('inicio'))
+    
+
+@app.route('/actualizar-gasto/<string:idGasto>', methods=['POST'])
+def  formActualizarGasto(idGasto):
+    if request.method == 'POST':
+        turno           = request.form['turno']
+        concepto        = request.form['concepto']
+        valor           = request.form['valor']
+        beneficiario    = request.form['beneficiario']
+        responsable     = request.form['responsable']
+        
+        #Script para recibir el archivo (foto)
+        if(request.files['foto']):
+            file     = request.files['foto']
+            fotoForm = recibeFoto(file)
+            resultData = recibeActualizarGasto(turno, concepto, valor, beneficiario, responsable, fotoForm, idGasto)
+        else:
+            fotoGasto  ='sin_foto.jpg'
+            resultData = recibeActualizarGasto(turno, concepto, valor, beneficiario, responsable, fotoGasto, idGasto)
+
+        if(resultData ==1):
+            return render_template('layout2.html', miData = listaGastos(), msg='Datos actualizados', tipo=1)
+        else:
+            msg ='Actualización correcta del registro'
+            return render_template('layout2.html', miData = listaGastos(), msg='Datos actualizados', tipo=1)
+            #return render_template('layout2.html', miData = listaGastos(), msg='No se pudo actualizar', tipo=1)
+
+
+#Eliminar Gasto
+@app.route('/borrar-gasto', methods=['GET', 'POST'])
+def formViewBorrarGasto():
+    if request.method == 'POST':
+        idGasto         = request.form['id']
+        nombreFoto      = request.form['nombreFoto']
+        resultData      = eliminarGasto(idGasto, nombreFoto)
+
+        if resultData ==1:
+            #Nota: retorno solo un json y no una vista para evitar refescar la vista
+            return jsonify([1])
+            #return jsonify(["respuesta", 1])
+        else: 
+            return jsonify([0])
+
+
+
+
+def eliminarGasto(id='', nombreFoto=''):
+        
+    conexion_MySQLdb = connectionBD() #Hago instancia a mi conexion desde la funcion
+    cur              = conexion_MySQLdb.cursor(dictionary=True)
+    
+    cur.execute('DELETE FROM gastos WHERE id=%s', (id,))
+    conexion_MySQLdb.commit()
+    resultado_eliminar = cur.rowcount #retorna 1 o 0
+    #print(resultado_eliminar)
+    
+    basepath = os.path.dirname (__file__) #C:\xampp\htdocs\localhost\Crud-con-FLASK-PYTHON-y-MySQL\app
+    url_File = os.path.join (basepath, 'static/fotos_gastos', nombreFoto)
+    os.remove(url_File) #Borrar foto desde la carpeta
+    #os.unlink(url_File) #Otra forma de borrar archivos en una carpeta
+    
+
+    return resultado_eliminar
+
+
+
+def recibeFoto(file):
+    print(file)
+    basepath = os.path.dirname (__file__) #La ruta donde se encuentra el archivo actual
+    filename = secure_filename(file.filename) #Nombre original del archivo
+
+    #capturando extensión del archivo ejemplo: (.png, .jpg, .pdf ...etc)
+    extension           = os.path.splitext(filename)[1]
+    nuevoNombreFile     = stringAleatorio() + extension
+    #print(nuevoNombreFile)
+        
+    upload_path = os.path.join (basepath, 'static/fotos_gastos', nuevoNombreFile) 
+    file.save(upload_path)
+
+    return nuevoNombreFile
+
+       
+  
+  
+#Redireccionando cuando la página no existe
+@app.errorhandler(404)
+def not_found(error):
+    return redirect(url_for('inicio'))
+    
+    
+    
+    
 
 # Inicia la aplicación Flask
 if __name__ == '__main__':
