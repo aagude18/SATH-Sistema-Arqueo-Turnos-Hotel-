@@ -57,14 +57,6 @@
 
                     // Limpiar el formulario
                     $('#add_arqueo')[0].reset();
-                },
-                error: function(error) {
-                    // Mostrar alerta de error con SweetAlert
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Hubo un problema al agregar el arqueo. Inténtelo de nuevo.',
-                    });
                 }
             });
         });
@@ -85,8 +77,8 @@
                     resultados_html += '<h4>Arqueos</h4><table class="table table-striped"><thead><tr><th>Fecha Inicio</th><th>Fecha Fin</th><th>Empleado</th><th>Base Recibida</th><th>Base Entregada</th><th>Entrega Admin</th><th>Observaciones</th></tr></thead><tbody>';
                     response.arqueos.forEach(arqueo => {
                         resultados_html += `<tr>
-                            <td>${arqueo.fecha_inicio}</td>
-                            <td>${arqueo.fecha_fin}</td>
+                            <td>${arqueo.fecha_in}</td>
+                            <td>${arqueo.fecha_out}</td>
                             <td>${arqueo.empleado}</td>
                             <td>${arqueo.base_recibida}</td>
                             <td>${arqueo.base_entregada}</td>
@@ -123,6 +115,13 @@
                     resultados_html += '</tbody></table>';
 
                     $('#resultados').html(resultados_html);
+                },
+                error: function(error){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Hubo un problema al agregar el arqueo. Inténtelo de nuevo.',
+                    });
                 }
             });
         });

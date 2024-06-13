@@ -65,6 +65,13 @@ def search_all():
     turno = request.args.get('Turno')
     
     # Buscar arqueos
+    cursor_turno = mydb.cursor(dictionary=True)
+    query_turno = "SELECT * FROM turno WHERE turno_cod = %s"
+    cursor_turno.execute(query_turno, (turno,))
+    turno_data = cursor_turno.fetchall()
+    cursor_turno.close()
+    
+    # Buscar arqueos
     cursor_arqueos = mydb.cursor(dictionary=True)
     query_arqueos = "SELECT * FROM arqueos WHERE turno_cod = %s"
     cursor_arqueos.execute(query_arqueos, (turno,))
@@ -88,7 +95,8 @@ def search_all():
     return jsonify({
         'arqueos': arqueos_data,
         'ventas': ventas_data,
-        'gastos': gastos_data
+        'gastos': gastos_data,
+        'turno':turno_data
     })
 
 
