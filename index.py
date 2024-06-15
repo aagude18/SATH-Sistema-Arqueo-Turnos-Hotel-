@@ -41,7 +41,7 @@ def listaArchivos():
 @app.route('/', methods=['GET', 'POST'])
 def home():
     cursor = db.mydb.cursor()
-    cursor.execute("SELECT * FROM arqueos")
+    cursor.execute("SELECT * FROM turno")
     myresult = cursor.fetchall()
     #Convertir a Diccionario
     insertObject = []
@@ -78,8 +78,8 @@ def add_arqueos():
     if turno and empleado and recibido and entregado and entregadoM:
         cursor = db.mydb.cursor()
         sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
-        data = (turno, empleado, recibido, entregado, entregadoM, observacion)
-        cursor.execute(sql, data)
+        data_arqueo = (turno, empleado, recibido, entregado, entregadoM, observacion)
+        cursor.execute(sql, data_arqueo)
         db.mydb.commit()
     return redirect(url_for('home'))
 
@@ -92,7 +92,7 @@ def search_arqueos():
     cur.execute(query, (turno,))
     filtered_data = cur.fetchall()
     cur.close()
-    return render_template('index.html', data=filtered_data)
+    return render_template('index.html', data_arqueo=filtered_data)
 
 # RUTA PARA EDITAR ARQUEO
 @app.route('/edit_arqueos/<string:id>', methods=['POST'])
@@ -105,8 +105,8 @@ def edit_arqueos(id):
     if empleado and recibido and entregado and entregadoM and observacion:
         cursor = db.mydb.cursor()
         sql = "UPDATE arqueos SET empleado =%s, base_recibida =%s, base_entregada =%s, entrega_caja_m =%s, observacion =%s WHERE Id =%s"
-        data = (empleado, recibido, entregado, entregadoM, observacion, id)
-        cursor.execute(sql, data)
+        data_arqueo = (empleado, recibido, entregado, entregadoM, observacion, id)
+        cursor.execute(sql, data_arqueo)
         db.mydb.commit()
     return redirect(url_for('home'))
 
