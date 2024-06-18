@@ -13,7 +13,7 @@
         <div class="card shadow">
             <div class="card-body">
                 <h1 class="text-center text-primary" > SATH (Sistema Arqueo de Turnos Hotel)</h1> 
-                <form action="/add_turnos" method="POST">
+                <form id="myForm" action="/add_turnos" method="POST">
                     <div class="row mb-3">
                         <div class="col">
                             <label>Fecha Inicio de Turno <span style="color: red;">*</span></label>
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="col">
-                        <button class="btn btn-primary mb-3 mt-4" type="submit">Crear Turno</button>
+                        <button class="btn btn-primary mb-3 mt-4" type="submit" id="myButton">Crear Turno</button>
                         <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalCierreTurno">Cierre de Turno</button>
                     </div>
                 </form>
@@ -408,6 +408,19 @@ function convertSelection() {
             const inputElement = document.getElementById('inputElement');
             inputElement.value = selectElement.value;
         }
+        
+</script>
+<script>
+    document.getElementById("myButton").addEventListener("click", function(event) {
+        // Prevenir el envío del formulario
+        event.preventDefault();
+        
+        // Mostrar la alerta
+        alert("Para confirmar la apertura del turno. Haga clic en aceptar.");
+        
+        // Después de que el usuario hace clic en OK, enviar el formulario
+        document.getElementById("myForm").submit();
 
+    });
 </script>
 {% endblock%}
