@@ -4,6 +4,7 @@
 <style>
     body {
       /*background-color: rgb(206, 226, 222);*/
+      background-size: cover;
       background-image: url("/static/imgs/bamboo.jpg");
     }
 </style>
@@ -203,8 +204,8 @@
                                 <th scope="col">Base Entregada</th>
                                 <th scope="col">Entrega Admin</th>
                                 <th scope="col">Observaciones</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
+                                <!--th scope="col">Edit</th>
+                                <th scope="col">Delete</th-->
                             </tr>
                         </thead>
                         <tbody>
@@ -216,8 +217,8 @@
                                     <td>{{d[4]}}</td>
                                     <td>{{d[5]}}</td>
                                     <td>{{d[6]}}</td>
-                                    <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
-                                    <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
+                                    <!--td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
+                                    <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td-->
                                 </tr>
                                 <!--MODAL-->
                                 <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

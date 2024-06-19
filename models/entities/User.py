@@ -17,4 +17,4 @@ class User(UserMixin):
         return check_password_hash(hashed_password, password)
 
 
-#print(generate_password_hash("Masinda"))
+print(generate_password_hash("Ketty2024"))

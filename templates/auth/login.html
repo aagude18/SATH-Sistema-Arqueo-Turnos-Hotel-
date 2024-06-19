@@ -8,7 +8,7 @@
 
 {% block body %}
 <form class="form-signin" action="/login" method="POST">
-    <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="100" height="60">
+    <img class="mb-4" src="{{ url_for('static', filename='img/logo.png') }}" alt="" width="190" height="120">
     {% with messages = get_flashed_messages() %}
 
     {% if messages %}
@@ -22,7 +22,7 @@
     {% endif %}
 
     {% endwith %}
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <h6 class="h6 mb-3 ">Ingreso al SATH</h6>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="form-floating">
         <input type="text" class="form-control" id="username" name="username" placeholder="Username">
