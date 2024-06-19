@@ -14,6 +14,7 @@ def connectionBD():
         return mydb
     else:
         print("Error en la conexion a BD")
+
     
 
     
