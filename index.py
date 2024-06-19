@@ -6,7 +6,8 @@ from werkzeug.utils import secure_filename
 import os
 from os import remove
 from os import path
-import src.database as mydb
+from src.database import mydb_connection
+from conexionBD import connectionBD
 from datetime import datetime
 template_dir =os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 template_dir = os.path.join(template_dir, 'src', 'templates')
@@ -53,15 +54,19 @@ def add_turnos():
 
     if turno and fecha_in and fecha_out:
         try:
-            cursor = mydb.cursor()
+            connection = mydb_connection()
+            cursor = connection.cursor()
             sql = "INSERT INTO turno (turno_cod, fecha_in, fecha_out) VALUES (%s, %s, %s)"
             data = (turno, fecha_in, fecha_out)
             cursor.execute(sql, data)
-            mydb.commit()
+            connection.commit()
             cursor.close()
+            connection.close()
             return jsonify({'message': 'Turno creado exitosamente'}), 200
         except Exception as e:
+            print(e)
             return jsonify({'message': 'Error al crear el turno', 'error': str(e)}), 500
+            
         
 
 
@@ -76,6 +81,7 @@ def add_arqueos():
     observacion = request.form['Observacion']
     
     if turno and empleado and recibido and entregado and entregadoM:
+        mydb=mydb_connection()
         cursor = mydb.cursor()
         sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
         data = (turno, empleado, recibido, entregado, entregadoM, observacion)
@@ -91,6 +97,7 @@ def search_all():
     turno = request.args.get('Turno')
     
     # Buscar arqueos
+    mydb=mydb_connection()
     cursor_turno = mydb.cursor(dictionary=True)
     query_turno = "SELECT * FROM turno WHERE turno_cod = %s"
     cursor_turno.execute(query_turno, (turno,))
@@ -131,6 +138,7 @@ def search_all():
 # Ruta para eliminar arqueo
 @app.route('/delete_arqueos/<string:id>')
 def delete_arqueos(id):
+    mydb=mydb_connection()
     cursor = mydb.cursor()
     sql = "DELETE FROM arqueos WHERE id = %s"
     cursor.execute(sql, (id,))
@@ -146,6 +154,7 @@ def add_ventas():
     efectivo = request.form['Efectivo']
     datafono = request.form['Datafono']
     otros = request.form['Otros']
+    mydb=mydb_connection()
     
     if turno and concepto and efectivo and datafono and otros:
         cursor = mydb.cursor()
@@ -164,6 +173,7 @@ def add_gastos():
     beneficiario = request.form['Beneficiario']
     concepto = request.form['Concepto']
     valor = request.form['Valor']
+    mydb=mydb_connection()
     
     if turno and responsable and beneficiario and concepto and valor:
         cursor = mydb.cursor()
@@ -172,7 +182,7 @@ def add_gastos():
         cursor.execute(sql, data)
         mydb.commit()
         cursor.close()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
  
 
 # Ruta para guardar Usuarios en La BD
@@ -181,17 +191,19 @@ def addUser():
     username = request.form['Username']
     name = request.form['Name']
     password = request.form['Password']
+    mydb=mydb_connection()
     if username and name and password:
         cursor = mydb.cursor()
         sql = "INSERT INTO users (Username, Firstname, Passw) VALUES (%s, %s, %s)"
         data = (username, name, password)
         cursor.execute(sql, data)
         mydb.commit()
-    return redirect(url_for('home'))
+    return redirect(url_for('dashboard'))
 
 #Ruta Para Eliminar
 @app.route('/delete/<string:id>')
 def delete(id):
+    mydb=mydb_connection()
     cursor = mydb.cursor()
     sql = "DELETE FROM arqueo WHERE id = %s"
     cursor.execute(sql, (id,))
@@ -202,6 +214,7 @@ def delete(id):
 # Ruta para eliminar gasto
 @app.route('/delete_gastos/<string:id>')
 def delete_gastos(id):
+    mydb=mydb_connection()
     cursor = mydb.cursor()
     sql = "DELETE FROM gastos WHERE id = %s"
     cursor.execute(sql, (id,))
@@ -221,6 +234,7 @@ def edit(id):
     entregado = request.form['Entregado']
     entregadoM = request.form['EntregadoM']
     gastos = request.form['Gastos']
+    mydb=mydb_connection()
 
     if empleado and recibido and efectivo and datafono and otros and entregado and entregadoM and gastos:
         cursor = mydb.cursor()
@@ -239,6 +253,7 @@ def edit_gastos(id):
     beneficiario = request.form['Beneficiario']
     concepto = request.form['Concepto']
     valor = request.form['Valor']
+    mydb=mydb_connection()
     
     if turno and empleado and beneficiario and concepto and valor:
         cursor = mydb.cursor()

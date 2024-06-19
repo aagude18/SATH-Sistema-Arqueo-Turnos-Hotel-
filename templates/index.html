@@ -13,7 +13,7 @@
         <div class="card shadow">
             <div class="card-body">
                 <h1 class="text-center text-primary" > SATH (Sistema Arqueo de Turnos Hotel)</h1> 
-                <form action="/add_turnos" method="POST">
+                <form id="add_turnos">
                     <div class="row mb-3">
                         <div class="col">
                             <label>Fecha Inicio de Turno <span style="color: red;">*</span></label>
@@ -39,77 +39,72 @@
                         <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalCierreTurno">Cierre de Turno</button>
                     </div>
                 </form>
-                <!--MODAL CIERRE TURNO-->
-                <div class="modal fade modal-lg" id="modalCierreTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Cierre de Turno</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="/add_arqueos" method="POST">
-                                    <div class="row mb-3">
-                                        <div class="col">
-                                            <label >Código del Turno <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
-                                        </div>
-                                        <div class="col">
-                                            <label>Empleado <span style="color: red;">*</span></label>
-                                            <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
-                                                <option selected></option>
-                                                <option value="Betty Berta">Betty Berta</option>
-                                                <option value="Leisby Marrugo">Leisby Marrugo</option>
-                                                <option value="Sindry Umaña">Sindry Umaña</option>
-                                            </select>
-                                        </div>
-                                        <div class="col">
-                                            <label>Base Recibida <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" name="Recibido" placeholder="$" required>
-                                        </div>
-                                        <div class="col">
-                                            <label>Base Entregada <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-select" name="Entregado" placeholder="$" required>
-                                        </div>
-                                        <div class="col">
-                                            <label>Entrega Admin <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-select" name="EntregadoM" placeholder="$" required>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="col-lg-8">
-                                            <div class="form-group">
-                                                <label for="comment">Observaciones:</label>
-                                            <textarea class="form-control" rows="5" id="comment" name="Observacion"></textarea>
+                    <!--MODAL CIERRE TURNO-->
+                    <div class="modal fade modal-lg" id="modalCierreTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cierre de Turno</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="formCierreTurno">
+                                        <div class="row mb-3 mt-4">
+                                            <div class="col">
+                                                <label>Código del Turno <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" id="Turno" name="Turno" placeholder="Código del Turno" required>
+                                            </div>
+                                            <div class="col">
+                                                <label>Fecha de Inicio <span style="color: red;">*</span></label>
+                                                <input type="date" class="form-control" name="FechaInicio" required>
+                                            </div>
+                                            <div class="col">
+                                                <label>Fecha de Fin <span style="color: red;">*</span></label>
+                                                <input type="date" class="form-control" name="FechaFin" required>
                                             </div>
                                         </div>
-                                        <div class="col">
-                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        <div class="row mb-3 mt-4">
+                                            <div class="col">
+                                                <label>Base Recibida <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="Recibido" placeholder="$" required>
+                                            </div>
+                                            <div class="col">
+                                                <label>Base Entregada <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="Entregado" placeholder="$" required>
+                                            </div>
+                                            <div class="col">
+                                                <label>Entregado a admin <span style="color: red;">*</span></label>
+                                                <input type="text" class="form-control" name="EntregadoM" placeholder="$" required>
+                                            </div>
+                                            <div class="col">
+                                                <label>Empleado <span style="color: red;">*</span></label>
+                                                <select class="form-control" id="Empleado" name="Empleado" required>
+                                                    <!-- Opciones de empleados -->
+                                                    <option value="Vanessa">Vanessa</option>
+                                                    <option value="Anguie">Anguie</option>
+                                                    <option value="Lina">Lina</option>
+                                                </select>
+                                            </div>
                                         </div>
-                                    </div>
-                                </form>
-                
-                            </div> 
-                        </div>
-                    </div> 
-                </div> 
-                <!--FIN MODAL CIERRE TURNO-->
+                                        <div class="row mb-3 mt-4">
+                                            <label>Observación <span style="color: red;">*</span></label>
+                                            <textarea class="form-control" placeholder="Ponga aquí sus observaciones" id="Observacion" name="Observacion"></textarea>
+                                          </div>
+                                        <div class="row mb-3 mt-4">
+                                            <div class="col">
+                                                <button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div> 
+                            </div>
+                        </div> 
+                    </div>                     
+                    <!--FIN MODAL CIERRE TURNO-->
+                <!--INICIO SEGUNDO CONTAINER-->
                 <div class="row mb-3"><h4 style="text-align: center;">Consulta Turnos </h4></div>
                 <!-- Tabla de resultados -->
-                <form action="/search_arqueos" method="GET">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalVentas">Agregar Ventas</button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
-                        </div>
-                    </div>
-                </form>
-                <!--MODAL VENTAS-->
+                <!--MODAL VENTAS--> 
                 <div class="modal fade modal-lg" id="modalVentas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -118,11 +113,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/add_ventas" method="POST">
+                                <form id="formVentas">
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Turno <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" name="Turno" placeholder="Codigo del Turno" required>
+                                            <input type="text" class="form-control" name="Turno" placeholder="Código del Turno" required>
                                         </div>
                                         <div class="col">
                                             <label>Concepto <span style="color: red;">*</span></label>
@@ -143,7 +138,7 @@
                                             <input type="text" class="form-control" name="Otros" placeholder="$" required>
                                         </div>
                                         <div class="col">
-                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -152,6 +147,7 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL VENTAS-->
+                
                 <!--MODAL GASTOS-->
                 <div class="modal fade modal-lg" id="modalGastos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -161,11 +157,11 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/add_gastos" method="POST">
+                                <form id="formGastos">
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Turno <span style="color: red;">*</span></label>
-                                            <input type="text" class="form-control" name="Turno" placeholder="Codigo del Turno" required>
+                                            <input type="text" class="form-control" name="Turno" placeholder="Código del Turno" required>
                                         </div>
                                         <div class="col">
                                             <label>Responsable <span style="color: red;">*</span></label>
@@ -186,7 +182,7 @@
                                             <input type="text" class="form-control" name="Valor" placeholder="$" required>
                                         </div>                
                                         <div class="col">
-                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -195,123 +191,26 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL GASTOS-->
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Empleado</th>
-                                <th scope="col">Base Recibida</th>
-                                <th scope="col">Base Entregada</th>
-                                <th scope="col">Entrega Admin</th>
-                                <th scope="col">Observaciones</th>
-                                <th scope="col">Edit</th>
-                                <th scope="col">Delete</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% if data %}
-                            {% for d in data %}
-                                <tr>
-                                    <td>{{d[2]}}</td>
-                                    <td>{{d[3]}}</td>
-                                    <td>{{d[4]}}</td>
-                                    <td>{{d[5]}}</td>
-                                    <td>{{d[6]}}</td>
-                                    <td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
-                                    <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td>
-                                </tr>
-                                <!--MODAL-->
-                                <div class="modal fade" id="modal{{d[0]}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h1 class="modal-title fs-5" id="exampleModalLabel">{{d[1]}}</h1>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="/edit_arqueos/{{d[0]}}" method="POST">
-                                                    <label>Empleado</label>
-                                                    <input type="text" class="form-control mb-3" name="Empleado" value="{{d[2]}}">
-                                                    <label>Base Recibida</label>
-                                                    <input type="text" class="form-control mb-3" name="Recibido" value="{{d[3]}}">
-                                                    <label>Base Entregada</label>
-                                                    <input type="text" class="form-control mb-3" name="Entregado" value="{{d[4]}}">
-                                                    <label>Entrega Admin</label>
-                                                    <input type="text" class="form-control mb-3" name="EntregadoM" value="{{d[5]}}">
-                                                    <label>Observaciones</label>
-                                                    <input type="text" class="form-control mb-3" name="Observacion" value="{{d[6]}}">
-                                                
-                                                    <!-- Move the button inside the form -->
-                                                    <div class="modal-footer">                                  
-                                                        <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="10" class="text-center">No se encontraron resultados</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                    </table>
-            </div>
-        </div>
-    </div>
     <!--FIN SEGUNDO CONTAINER-->
     <!--TERCER CONTAINER-->
     <div class="container">
-        <div class="card shadow" >
+        <div class="card shadow">
             <div class="card-body">
-                <form action="/search_ventas" method="GET">
+                <form id="search_form">
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Código de Turno</label>
-                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                            <label for="search_turno">Buscar Código del Turno:</label>
+                            <input type="text" class="form-control" id="search_turno" name="Turno" required>
                         </div>
-                        <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                        <div class="col mt-2 d-flex align-items-center">
+                            <button class="btn btn-primary mt-4 me-2" type="submit">Buscar</button>
+                            <button class="btn btn-primary mt-4 me-2" type="button" data-bs-toggle="modal" data-bs-target="#modalVentas">Agregar Ventas</button>
+                            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
                         </div>
                     </div>
                 </form>
-                <!-- Tabla de resultados -->
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Turno</th>
-                            <th scope="col">Concepto</th>
-                            <th scope="col">Efectivo</th>
-                            <th scope="col">Datafono</th>
-                            <th scope="col">Otros Medios</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% if data_ventas %}
-                        {% for d in data_ventas %}
-                            <tr>
-                                <td>{{ d[1]}}</td>
-                                <td>{{ d[2]}}</td>
-                                <td>{{ d[3]}}</td>
-                                <td>{{ d[4]}}</td>
-                                <td>{{ d[5]}}</td>
-                            </tr>
-                        {% endfor %}
-                    {% else %}
-                        <tr>
-                            <td colspan="10" class="text-center">No se encontraron resultados</td>
-                        </tr>
-                    {% endif %}
-                    </tbody>
-                </table>
-                <div class="col">
-                    <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
-                </div>
-                    <div class="col"><label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
-                </div>
-                    <div class="col">
-                        <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label></div>
+                <div id="resultados" class="mt-4">
+                    <!-- Aquí se renderizarán los resultados -->
                 </div>
             </div>
         </div>

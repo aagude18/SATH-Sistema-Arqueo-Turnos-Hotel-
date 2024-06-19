@@ -3,15 +3,15 @@
 import mysql.connector
 
 def connectionBD():
-    mydb = mysql.connector.connect(
+    mydbe = mysql.connector.connect(
         host ="localhost",
         user ="root",
-        passwd ="admin",
+        passwd ="",
         database = "evidencias"
         )
-    if mydb:
+    if mydbe:
         print ("Conexion exitosa a BD")
-        return mydb
+        return mydbe
     else:
         print("Error en la conexion a BD")
     
