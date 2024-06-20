@@ -1,8 +1,7 @@
 <nav class="navbar bg-light">
     <div class="container-fluid">
         <a href="/" class="navbar-brand">
-            <img class="logo" src="{{ url_for('static', filename ='imgs/logo.png') }}"
-                alt="Logo web developer Urian Viera">
+            <img class="logo" src="{{ url_for('static', filename ='imgs/logo.png') }}">
         </a>
     </div>
 </nav>
@@ -31,6 +30,12 @@
           <a class="nav-link" href="{{ url_for('logout') }}"><strong style="color: white;"><i class="fa fa-quit" aria-hidden="true"></i> Salir</strong></a>
         </li>
       </ul>
+      <ul class="col navbar-nav">
+        <li class="col nav-item">
+          <h4 style="text-align: right;"><p style="color: white;">{{ current_user.fullname }}</p></h4>  
+        </li>
+      </ul>
+    </div>
     </div>
   </nav>
   <!-- Modal -->
