@@ -99,7 +99,7 @@ def add_arqueos():
     return redirect(url_for('dashboard'))
 
 
-# Ruta para buscar todos los datos
+# Ruta para buscar todos los datos y evidencias
 @app.route('/search_all', methods=['GET'])
 def search_all():
     turno = request.args.get('Turno')
