@@ -177,7 +177,7 @@ def add_ventas():
     else:
         return jsonify({'error': 'Datos incompletos.'}), 400
     
-    
+#manejo de formulario de gastos
 @app.route('/add_gastos', methods=['POST'])
 def add_gastos():
     turno = request.form['Turno']
