@@ -61,6 +61,7 @@ def load_user(id):
 
 # Routes to Render Something
 @app.route('/homee', methods=['GET', 'POST'])
+@login_required
 @csrf.exempt
 def homee():
     cursor = db.connection.cursor()
@@ -77,6 +78,7 @@ def homee():
 
 #RUTA PARA AGREGAR TURNO
 @app.route('/add_turnos', methods=['POST'])
+@login_required
 @csrf.exempt
 def add_turnos():
     fecha_in = request.form['FechaIn']
@@ -92,6 +94,7 @@ def add_turnos():
 
 #RUTA PARA AGREGAR ARQUEOS
 @app.route('/add_arqueos', methods=['POST'])
+@login_required
 @csrf.exempt
 def add_arqueos():
     turno = request.form['Turno']
@@ -110,6 +113,7 @@ def add_arqueos():
 
 #RUTA PARA BUSQUEDA DE ARQUEO 
 @app.route('/search_arqueos', methods=['GET'])
+@login_required
 @csrf.exempt
 def search_arqueos():
     turno = request.args.get('Turno')
@@ -122,6 +126,7 @@ def search_arqueos():
 
 # RUTA PARA EDITAR ARQUEO
 @app.route('/edit_arqueos/<string:id>', methods=['POST'])
+@login_required
 @csrf.exempt
 def edit_arqueos(id):
     empleado = request.form['Empleado']
@@ -139,6 +144,7 @@ def edit_arqueos(id):
 
 #RUTA PARA ELIMINAR ARQUEO
 @app.route('/delete_arqueos/<string:id>')
+@login_required
 @csrf.exempt
 def delete_arqueos(id):
     cursor = db.connection.cursor()
@@ -150,6 +156,7 @@ def delete_arqueos(id):
 
 #RUTA PARA AGREGAR VENTA
 @app.route('/add_ventas', methods=['POST'])
+@login_required
 @csrf.exempt
 def add_ventas():
     turno = request.form['Turno']
@@ -167,6 +174,7 @@ def add_ventas():
 
 #RUTA PARA AGREGAR GASTO
 @app.route('/add_gastos', methods=['POST'])
+@login_required
 @csrf.exempt
 def add_gastos():
     turno = request.form['Turno']
@@ -184,6 +192,7 @@ def add_gastos():
 
 #RUTA PARA BUSQUEDA DE GASTOS 
 @app.route('/search_gastos', methods=['GET'])
+@login_required
 @csrf.exempt
 def search_gastos():
     turno_gasto = request.args.get('Turno')
@@ -206,6 +215,7 @@ def search_gastos():
 
 #RUTA PARA BUSQUEDA DE VENTAS 
 @app.route('/search_ventas', methods=['GET'])
+@login_required
 @csrf.exempt
 def search_ventas():
     turno_venta = request.args.get('Turno')
@@ -237,6 +247,7 @@ def search_ventas():
 
 #Ruta Para Eliminar
 @app.route('/delete/<string:id>')
+@login_required
 @csrf.exempt
 def delete(id):
     cursor = db.connection.cursor()
@@ -248,6 +259,7 @@ def delete(id):
 
 #Ruta para Eliminar en tabla de Gastos
 @app.route('/delete_gastos/<string:id>')
+@login_required
 @csrf.exempt
 def delete_gastos(id):
     cursor = db.connection.cursor()
@@ -259,6 +271,7 @@ def delete_gastos(id):
 
 #Ruta Para Editar
 @app.route('/edit/<string:id>', methods=['POST'])
+@login_required
 @csrf.exempt
 def edit(id):
     turno = request.form['Turno']
@@ -281,6 +294,7 @@ def edit(id):
 
 # RUTA PARA EDITAR GASTOS
 @app.route('/edit_gastos/<string:id>', methods=['POST'])
+@login_required
 @csrf.exempt
 def edit_gastos(id):
     turno = request.form['Turno']
@@ -298,10 +312,12 @@ def edit_gastos(id):
 
 
 @app.route('/enlaces', strict_slashes=False)
+@login_required
 def enlaces():
     return render_template("enlaces.html")
 
 @app.route('/guardar-foto', methods=['GET', 'POST'])
+@login_required
 @csrf.exempt
 def registarArchivo():
         if request.method == 'POST':
@@ -320,6 +336,7 @@ def registarArchivo():
         return render_template('index.html', list_Photos = listaArchivos())
 
 @app.route('/<string:nombreFoto>', methods=['GET','POST'])
+@login_required
 @csrf.exempt
 def EliminarFoto(nombreFoto=''):
     if request.method == 'GET':
@@ -344,12 +361,14 @@ def not_found(error):
 
 #Creando mi decorador para el home, el cual retornara la Lista de Gastos
 @app.route('/evidencia', methods=['GET','POST'])
+@login_required
 def inicio():
     return render_template('layout2.html', miData = listaGastos())
 
 
 #RUTAS
 @app.route('/registrar-Gasto', methods=['GET','POST'])
+@login_required
 def addGasto():
     return render_template('acciones/add.html')
 
@@ -357,6 +376,7 @@ def addGasto():
  
 #Registrando nuevo gasto
 @app.route('/gasto', methods=['POST'])
+@login_required
 @csrf.exempt
 def formAddGasto():
     if request.method == 'POST':
@@ -380,6 +400,7 @@ def formAddGasto():
 
 
 @app.route('/form-update-gasto/<string:id>', methods=['GET','POST'])
+@login_required
 @csrf.exempt
 def formViewUpdate(id):
     if request.method == 'GET':
@@ -394,6 +415,7 @@ def formViewUpdate(id):
    
   
 @app.route('/ver-detalles-del-gasto/<int:idGasto>', methods=['GET', 'POST'])
+@login_required
 @csrf.exempt
 def viewDetalleGasto(idGasto):
     msg =''
@@ -408,6 +430,7 @@ def viewDetalleGasto(idGasto):
     
 
 @app.route('/actualizar-gasto/<string:idGasto>', methods=['POST'])
+@login_required
 @csrf.exempt
 def  formActualizarGasto(idGasto):
     if request.method == 'POST':
@@ -436,6 +459,7 @@ def  formActualizarGasto(idGasto):
 
 #Eliminar Gasto
 @app.route('/borrar-gasto', methods=['GET', 'POST'])
+@login_required
 @csrf.exempt
 def formViewBorrarGasto():
     if request.method == 'POST':
@@ -530,6 +554,7 @@ def logout():
 
 
 @app.route('/home')
+@login_required
 def home():
     return render_template('index.html')
 
