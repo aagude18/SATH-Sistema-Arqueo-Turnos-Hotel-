@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-
     // Función para poblar el selector de empleados
     function populateEmpleadoSelect() {
         const empleados = ['Vanessa', 'Anguie', 'Lina'];
@@ -88,10 +87,14 @@ $(document).ready(function() {
                 });
             },
             error: function(error) {
+                let messajerror="Hubo un problema al guardar el gasto, por favor verifique e inténtelo de nuevo";
+                if(error.responseJSON && error.responseJSON.error){
+                    messajerror=error.responseJSON.error;
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Hubo un problema al guardar la venta. Inténtelo de nuevo.',
+                    text: messajerror,
                 });
             }
         });
@@ -100,26 +103,35 @@ $(document).ready(function() {
     // Capturar el envío del formulario de gastos
     $('#formGastos').on('submit', function(e) {
         e.preventDefault();
-        const formData = $(this).serialize();
 
+        // Crear objeto FormData
+        var formData = new FormData(this);
+
+        // Enviar datos mediante AJAX
         $.ajax({
             url: '/add_gastos',
             method: 'POST',
             data: formData,
+            processData: false,  // No procesar los datos (FormData se encarga)
+            contentType: false,  // No configurar el tipo de contenido
             success: function(response) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Gasto guardado',
                     text: 'Los detalles del gasto se han guardado exitosamente.',
                 }).then(function() {
-                    $('#formGastos')[0].reset();
+                    $('#formGastos')[0].reset();  // Limpiar el formulario después de éxito
                 });
             },
             error: function(error) {
+                let mensajeerror = "Hubo un problema al guardar el gasto, por favor verifique e inténtelo de nuevo";
+                if (error.responseJSON && error.responseJSON.error) {
+                    mensajeerror = error.responseJSON.error;
+                }
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'Hubo un problema al guardar el gasto. Inténtelo de nuevo.',
+                    text: mensajeerror,
                 });
             }
         });
@@ -146,6 +158,7 @@ $(document).ready(function() {
             success: function(response) {
                 let resultados_html = '';
 
+                // Tabla de Arqueos
                 resultados_html += '<h4>Arqueos</h4><table class="table table-striped"><thead><tr><th>Fecha Inicio</th><th>Fecha Fin</th><th>Empleado</th><th>Base Recibida</th><th>Base Entregada</th><th>Entrega Admin</th><th>Observaciones</th></tr></thead><tbody>';
                 response.arqueos.forEach(arqueo => {
                     resultados_html += `<tr>
@@ -160,6 +173,7 @@ $(document).ready(function() {
                 });
                 resultados_html += '</tbody></table>';
 
+                // Tabla de Ventas
                 resultados_html += '<h4>Ventas</h4><table class="table table-striped"><thead><tr><th>Turno</th><th>Concepto</th><th>Efectivo</th><th>Datafono</th><th>Otros Medios</th></tr></thead><tbody>';
                 response.ventas.forEach(venta => {
                     resultados_html += `<tr>
@@ -172,14 +186,19 @@ $(document).ready(function() {
                 });
                 resultados_html += '</tbody></table>';
 
-                resultados_html += '<h4>Gastos</h4><table class="table table-striped"><thead><tr><th>Turno</th><th>Responsable</th><th>Beneficiario</th><th>Concepto</th><th>Valor</th></tr></thead><tbody>';
+                // Tabla de Gastos
+                resultados_html += '<h4>Gastos</h4><table class="table table-striped"><thead><tr><th>Turno</th><th>Responsable</th><th>Beneficiario</th><th>Concepto</th><th>Valor</th><th>Evidencia</th></tr></thead><tbody>';
                 response.gastos.forEach(gasto => {
+                    // Construir la URL completa de la evidencia
+                    const evidenciaUrl = `/static/archivos/${gasto.evidencia}`;
+
                     resultados_html += `<tr>
                         <td>${gasto.turno_cod}</td>
                         <td>${gasto.responsable}</td>
                         <td>${gasto.beneficiario}</td>
                         <td>${gasto.concepto}</td>
                         <td>${gasto.valor_pagado}</td>
+                        <td><a href="${evidenciaUrl}" target="_blank">Ver Evidencia</a></td>
                     </tr>`;
                 });
                 resultados_html += '</tbody></table>';

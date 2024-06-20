@@ -5,6 +5,20 @@
     body {
       /*background-color: rgb(206, 226, 222);*/
       background-image: url("/static/imgs/bamboo.jpg");
+      
+    }
+    .modal-dialog{
+        margin-right: auto;
+        margin-left: 22%;
+    }
+
+    .modal-lg {
+        max-width: 80%;
+    }
+
+    .modal-body {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
     }
 </style>
     
@@ -106,7 +120,7 @@
                 <!-- Tabla de resultados -->
                 <!--MODAL VENTAS--> 
                 <div class="modal fade modal-lg" id="modalVentas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Detalle de la venta</h1>
@@ -137,7 +151,7 @@
                                             <label>Otros Medios <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="Otros" placeholder="$" required>
                                         </div>
-                                        <div class="col">
+                                        <div class="col mt-2">
                                             <button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
                                         </div>
                                     </div>
@@ -150,14 +164,14 @@
                 
                 <!--MODAL GASTOS-->
                 <div class="modal fade modal-lg" id="modalGastos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5" id="exampleModalLabel">Detalle de los Gastos</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="formGastos">
+                                <form id="formGastos" enctype="multipart/form-data">
                                     <div class="row mb-3 mt-4">
                                         <div class="col">
                                             <label>Turno <span style="color: red;">*</span></label>
@@ -182,6 +196,12 @@
                                             <input type="text" class="form-control" name="Valor" placeholder="$" required>
                                         </div>                
                                         <div class="col">
+                                            <label>Evidencia <span style="color: red;">*</span></label>
+                                            <input type="file" class="form-control" name="Evidencia" required>
+                                        </div>  
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col text-end">
                                             <button class="btn btn-primary mb-3 mt-4" type="submit">Guardar</button>
                                         </div>
                                     </div>
@@ -205,7 +225,8 @@
                         <div class="col mt-2 d-flex align-items-center">
                             <button class="btn btn-primary mt-4 me-2" type="submit">Buscar</button>
                             <button class="btn btn-primary mt-4 me-2" type="button" data-bs-toggle="modal" data-bs-target="#modalVentas">Agregar Ventas</button>
-                            <button class="btn btn-primary mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
+                            <button class="btn btn-primary mt-4 me-2" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
+                            <a class="btn btn-primary mt-4" type="button" href="/evidencia">Evidencias </i></a>
                         </div>
                     </div>
                 </form>
