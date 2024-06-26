@@ -316,43 +316,6 @@ def edit_gastos(id):
 def enlaces():
     return render_template("enlaces.html")
 
-@app.route('/guardar-foto', methods=['GET', 'POST'])
-@login_required
-@csrf.exempt
-def registarArchivo():
-        if request.method == 'POST':
-            if(request.files['archivo']):
-                #Script para archivo
-                file     = request.files['archivo']
-                basepath = path.dirname (__file__) #La ruta donde se encuentra el archivo actual
-                filename = secure_filename(file.filename) #Nombre original del archivo
-                
-                #capturando extensión del archivo ejemplo: (.png, .jpg, .pdf ...etc)
-                extension           = path.splitext(filename)[1]
-                nuevoNombreFile     = stringAleatorio() + extension
-                 
-                upload_path = path.join (basepath, 'static/archivos', nuevoNombreFile) 
-                file.save(upload_path)
-        return render_template('index.html', list_Photos = listaArchivos())
-
-@app.route('/<string:nombreFoto>', methods=['GET','POST'])
-@login_required
-@csrf.exempt
-def EliminarFoto(nombreFoto=''):
-    if request.method == 'GET':
-        #print(nombreFoto) #Nombre del archivo subido
-        basepath = path.dirname (__file__) #C:\xampp\htdocs\elmininar-archivos-con-Python-y-Flask\app
-        url_File = path.join (basepath, 'static/archivos', nombreFoto)
-        #print(url_File)
-        
-        #verifcando si existe el archivo, con la funcion (path.exists) antes de de llamar remove 
-        # para eliminarlo, con el fin de evitar un error si no existe.
-        if path.exists(url_File):
-            remove(url_File) #Borrar foto desde la carpeta
-            #os.unlink(url_File) #Otra forma de borrar archivos en una carpeta
-    return render_template('index.html', list_Photos = listaArchivos())
-        
-    
 #Redireccionando cuando la página no existe
 @app.errorhandler(404)
 def not_found(error):
@@ -577,4 +540,4 @@ if __name__ == '__main__':
     csrf.init_app(app)
     app.register_error_handler(401, status_401)
     app.register_error_handler(404, status_404)
-    app.run(debug=True)
+    app.run(host='127.0.0.1', debug=True)

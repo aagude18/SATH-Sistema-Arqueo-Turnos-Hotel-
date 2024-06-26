@@ -55,13 +55,10 @@
                                             <label >Código del Turno <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
                                         </div>
-                                        <div class="col">
+                                        <div class="row">
                                             <label>Empleado <span style="color: red;">*</span></label>
                                             <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
-                                                <option selected></option>
-                                                <option value="Betty Berta">Betty Berta</option>
-                                                <option value="Leisby Marrugo">Leisby Marrugo</option>
-                                                <option value="Sindry Umaña">Sindry Umaña</option>
+                                                <option value={{ current_user.fullname }}>{{ current_user.fullname }}</option>
                                             </select>
                                         </div>
                                         <div class="col">
