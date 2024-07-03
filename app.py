@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
+import numpy as py
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
 from random import sample
@@ -92,24 +93,6 @@ def add_turnos():
         db.connection.commit()
     return redirect(url_for('homee'))
 
-#RUTA PARA AGREGAR ARQUEOS
-@app.route('/add_arqueos', methods=['POST'])
-@login_required
-@csrf.exempt
-def add_arqueos():
-    turno = request.form['Turno']
-    empleado = request.form['Empleado']
-    recibido = request.form['Recibido']
-    entregado = request.form['Entregado']
-    entregadoM = request.form['EntregadoM']
-    observacion = request.form['Observacion']
-    if turno and empleado and recibido and entregado and entregadoM:
-        cursor = db.connection.cursor()
-        sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
-        data_arqueo = (turno, empleado, recibido, entregado, entregadoM, observacion)
-        cursor.execute(sql, data_arqueo)
-        db.connection.commit()
-    return redirect(url_for('homee'))
 
 #RUTA PARA BUSQUEDA DE ARQUEO 
 @app.route('/search_arqueos', methods=['GET'])
@@ -205,44 +188,92 @@ def search_gastos():
     filtered_data2 = cur2.fetchall()
     cur.close()
     cur2.close()
-    suma_valor = 0
-    suma_total = 0
+    suma_valor_gasto = 0
+    suma_total_gasto = 0
     for fila in filtered_data2:
         # Suponiendo que la columna que deseas sumar se llama 'valor'
-        suma_valor += int(fila['valor_pagado'])
-        suma_total = int_a_pesos(suma_valor)
-    return render_template('index.html', data_gastos=filtered_data, suma_total=suma_total)
+        suma_valor_gasto += int(fila['valor_pagado'])
+        suma_total_gasto = int_a_pesos(suma_valor_gasto)
+    return render_template('index.html', data_gastos=filtered_data, suma_total_gasto=suma_total_gasto)
 
 #RUTA PARA BUSQUEDA DE VENTAS 
 @app.route('/search_ventas', methods=['GET'])
 @login_required
 @csrf.exempt
 def search_ventas():
-    turno_venta = request.args.get('Turno')
-    cur = db.connection.cursor()
-    query = "SELECT * FROM ventas WHERE turno_cod = %s"
-    cur.execute(query, (turno_venta,))
-    filtered_data = cur.fetchall()
-    cur2 = db.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur2.execute(query, (turno_venta,))
-    filtered_data2 = cur2.fetchall()
-    cur.close()
-    cur2.close()
-    suma_valor_efectivo = 0
-    suma_total_efectivo = 0
-    suma_valor_datafono = 0
-    suma_total_datafono = 0
-    suma_valor_otros = 0
-    suma_total_otros = 0
-    for fila in filtered_data2:
-        # Suponiendo que la columna que deseas sumar se llama 'valor'
-        suma_valor_efectivo += int(fila['efectivo'])
-        suma_total_efectivo = int_a_pesos(suma_valor_efectivo)
-        suma_valor_datafono += int(fila['datafono'])
-        suma_total_datafono = int_a_pesos(suma_valor_datafono)
-        suma_valor_otros += int(fila['otros'])
-        suma_total_otros = int_a_pesos(suma_valor_otros)
-    return render_template('index.html', data_ventas=filtered_data, suma_total_efectivo=suma_total_efectivo, suma_total_datafono=suma_total_datafono, suma_total_otros=suma_total_otros)
+    turno = request.args.get('Turno')
+    
+    # Búsqueda de gastos
+    cur_gastos = db.connection.cursor()
+    query_gastos = "SELECT * FROM gastos WHERE turno_cod = %s"
+    cur_gastos.execute(query_gastos, (turno,))
+    filtered_gastos = cur_gastos.fetchall()
+    
+    cur_gastos_dict = db.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur_gastos_dict.execute(query_gastos, (turno,))
+    filtered_gastos_dict = cur_gastos_dict.fetchall()
+    
+    suma_valor_gasto = sum(int(fila['valor_pagado']) for fila in filtered_gastos_dict)
+    suma_total_gasto = int_a_pesos(suma_valor_gasto)
+    
+    cur_gastos.close()
+    cur_gastos_dict.close()
+    
+    # Búsqueda de ventas
+    cur_ventas = db.connection.cursor()
+    query_ventas = "SELECT * FROM ventas WHERE turno_cod = %s"
+    cur_ventas.execute(query_ventas, (turno,))
+    filtered_ventas = cur_ventas.fetchall()
+    
+    cur_ventas_dict = db.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur_ventas_dict.execute(query_ventas, (turno,))
+    filtered_ventas_dict = cur_ventas_dict.fetchall()
+    
+    suma_valor_efectivo = sum(int(fila['efectivo']) for fila in filtered_ventas_dict)
+    suma_valor_datafono = sum(int(fila['datafono']) for fila in filtered_ventas_dict)
+    suma_valor_otros = sum(int(fila['otros']) for fila in filtered_ventas_dict)
+    
+    suma_total_venta = suma_valor_efectivo + suma_valor_datafono + suma_valor_otros
+    suma_total_venta_pesos = int_a_pesos(suma_total_venta)
+    
+    cur_ventas.close()
+    cur_ventas_dict.close()
+    
+    return render_template('index.html', data_gastos=filtered_gastos, suma_total_gasto=suma_total_gasto,
+                           data_ventas=filtered_ventas, suma_total_efectivo=int_a_pesos(suma_valor_efectivo),
+                           suma_total_datafono=int_a_pesos(suma_valor_datafono),
+                           suma_total_otros=int_a_pesos(suma_valor_otros),
+                           suma_total_venta=suma_total_venta_pesos)
+
+#RUTA PARA AGREGAR ARQUEOS
+@app.route('/add_arqueos', methods=['GET','POST'])
+@login_required
+@csrf.exempt
+def add_arqueos():
+    turno = request.form['Turno']
+    empleado = request.form['Empleado']
+    recibido = request.form['Recibido']
+    entregado = request.form['Entregado']
+    entregadoM = request.form['EntregadoM']
+    observacion = request.form['Observacion']
+    valor_recibido=request.form['suma_total_venta']
+    valor_gastado=request.form['suma_total_gasto']
+    total_venta = valor_recibido.replace('$', '').replace(',', '')
+    total_gasto = valor_gastado.replace('$', '').replace(',', '')
+    total_arqueo = float(total_venta) + float(recibido) - float(total_gasto) # Convertir a float si es necesario
+    total_fin_arqueo = float(entregado)+float(entregadoM)
+    # Verificar que entregadoM sea igual a suma_total_arqueo
+    if turno and empleado and recibido and entregado and entregadoM and total_arqueo == total_fin_arqueo:
+        cursor = db.connection.cursor()
+        sql = "INSERT INTO arqueos (turno_cod, empleado, base_recibida, base_entregada, entrega_caja_m, observacion) VALUES (%s, %s, %s, %s, %s, %s)"
+        data_arqueo = (turno, empleado, recibido, entregado, entregadoM, observacion)
+        cursor.execute(sql, data_arqueo)
+        db.connection.commit()
+        return redirect(url_for('homee'))
+    else:
+        flash('El valor de Entrega Caja M no coincide con el valor total del arqueo', 'error')
+        return redirect(url_for('homee'))  # Puedes crear una función para mostrar el formulario de nuevo
+
 
 
 #Ruta Para Eliminar

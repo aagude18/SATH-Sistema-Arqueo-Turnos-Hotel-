@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li style="color: red;">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 <style>
     body {
       /*background-color: rgb(206, 226, 222);*/
@@ -37,9 +46,34 @@
                     </div>
                     <div class="col">
                         <button class="btn btn-primary mb-3 mt-4" type="submit" id="myButton">Crear Turno</button>
+                        <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalCalculoTurno">Calculo de Turno</button>
                         <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalCierreTurno">Cierre de Turno</button>
                     </div>
                 </form>
+                <!--MODAL CALCULO DE TURNO-->
+                <div class="modal fade modal-lg" id="modalCalculoTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Calculo de Turno</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/search_ventas" method="GET">
+                                    <div class="row mb-3">
+                                        <div class="col">
+                                            <label>Código de Turno</label>
+                                            <input type="text" class="form-control mb-3" name="Turno" placeholder="Ingrese código del turno">
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
                 <!--MODAL CIERRE TURNO-->
                 <div class="modal fade modal-lg" id="modalCierreTurno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -51,6 +85,8 @@
                             <div class="modal-body">
                                 <form action="/add_arqueos" method="POST">
                                     <div class="row mb-3">
+                                        <input type="hidden" name="suma_total_venta" value="{{ suma_total_venta }}">
+                                        <input type="hidden" name="suma_total_gasto" value="{{ suma_total_gasto }}">
                                         <div class="col">
                                             <label >Código del Turno <span style="color: red;">*</span></label>
                                             <input type="text" class="form-control" name="Turno" id="CodigoDelTurno" required>
@@ -58,7 +94,7 @@
                                         <div class="row">
                                             <label>Empleado <span style="color: red;">*</span></label>
                                             <select class="form-select" id="selectElement" name="Empleado" aria-label="Default select example" onchange="convertSelection()" required>
-                                                <option value={{ current_user.fullname }}>{{ current_user.fullname }}</option>
+                                                <option value="{{ current_user.fullname }}">{{ current_user.fullname }}</option>
                                             </select>
                                         </div>
                                         <div class="col">
@@ -92,9 +128,21 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL CIERRE TURNO-->
+                <div class="row">
+                    <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
+                </div>
+                    <div class="row">
+                    <label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
+                </div>
+                <div class="row">
+                    <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label>
+                </div>
+                <div class="row">
+                    <label><strong> Total Arqueo =  {{suma_total_venta}} </strong></label>
+                </div>
                 <div class="row mb-3"><h4 style="text-align: center;">Consulta Turnos </h4></div>
                 <!-- Tabla de resultados -->
-                <form action="/search_arqueos" method="GET">
+                <form action="/search_arqueos" method="GET" id="search_arqueos">
                     <div class="row mb-3">
                         <div class="col">
                             <label>Código de Turno</label>
@@ -104,6 +152,7 @@
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
                             <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalVentas">Agregar Ventas</button>
                             <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalGastos">Agregar Gastos</button>
+                            <a class="btn btn-primary mb-3 mt-4" type="button" href="http://localhost:5000/evidencia">Evidencias </i></a>
                         </div>
                     </div>
                 </form>
@@ -255,8 +304,8 @@
                         {% endif %}
                         </tbody>
                     </table>
-                    <div class="row mb-3"><h4 style="text-align: center;">Consulta Ventas </h4></div>
-                    <form action="/search_ventas" method="GET">
+                    <div class="row mb-3"><h4 style="text-align: center;">Ventas </h4></div>
+                    <!--form action="/search_ventas" method="GET">
                         <div class="row mb-3">
                             <div class="col">
                                 <label>Código de Turno</label>
@@ -266,7 +315,7 @@
                                 <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
                             </div>
                         </div>
-                    </form>
+                    </form-->
                     <!-- Tabla de resultados -->
                     <table class="table table-bordered">
                         <thead>
@@ -296,17 +345,8 @@
                         {% endif %}
                         </tbody>
                     </table>
-                    <div class="row">
-                        <label><strong> Total Efectivo =  {{suma_total_efectivo}} </strong></label>
-                    </div>
-                        <div class="row">
-                        <label><strong> Total Datafono =  {{suma_total_datafono}} </strong></label>
-                    </div>
-                    <div class="row">
-                        <label><strong> Total Otros Medios =  {{suma_total_otros}} </strong></label>
-                    </div>
-                    <h4 style="text-align: center;">Consulta Gastos </h4>
-                    <form action="/search_gastos" method="GET">
+                    <h4 style="text-align: center;">Gastos </h4>
+                    <!--form action="/search_gastos" method="GET">
                         <div class="row mt-3">
                             <div class="col">
                                 <label>Código de Turno</label>
@@ -317,7 +357,7 @@
                                 <a class="btn btn-primary mb-3 mt-4" type="button" href="http://localhost:5000/evidencia">Evidencias </i></a>
                             </div>
                         </div>
-                    </form>
+                    </form-->
                     <!-- Tabla de resultados -->
                     <table class="table table-bordered">
                         <thead>
@@ -378,7 +418,7 @@
                         </tbody>
                     </table>
                     <div class="col">
-                        <label><strong> Total Gastado =  {{suma_total}} </strong></label>
+                        <label><strong> Total Gastado =  {{suma_total_gasto}} </strong></label>
                     </div>
                     <!--SUBIR ARCHIVO-->
                       
@@ -409,6 +449,7 @@ function convertSelection() {
         
 </script>
 <script>
+
     document.getElementById("myButton").addEventListener("click", function(event) {
         // Prevenir el envío del formulario
         event.preventDefault();
