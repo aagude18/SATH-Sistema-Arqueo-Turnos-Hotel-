@@ -271,7 +271,7 @@ def add_arqueos():
         db.connection.commit()
         return redirect(url_for('homee'))
     else:
-        flash('El valor de Entrega Caja M no coincide con el valor total del arqueo', 'error')
+        flash('El valor de Entrega no coincide con el valor total del arqueo', 'error')
         return redirect(url_for('homee'))  # Puedes crear una función para mostrar el formulario de nuevo
 
 
@@ -342,16 +342,18 @@ def edit_gastos(id):
     return redirect(url_for('homee'))
 
 
-@app.route('/enlaces', strict_slashes=False)
+#RUTA PARA INVENTARIO 
+@app.route('/tienda', methods=['GET'])
 @login_required
-def enlaces():
-    return render_template("enlaces.html")
-
-#Redireccionando cuando la página no existe
-@app.errorhandler(404)
-def not_found(error):
-    return 'Ruta no encontrada'
-
+@csrf.exempt
+def tienda():
+    categoria = request.args.get('Categoria')
+    cur = db.connection.cursor()
+    query = "SELECT * FROM productos WHERE categoria = %s"
+    cur.execute(query, (categoria,))
+    filtered_data = cur.fetchall()
+    cur.close()
+    return render_template('tienda.html', data_tienda=filtered_data)
 
 #Creando mi decorador para el home, el cual retornara la Lista de Gastos
 @app.route('/evidencia', methods=['GET','POST'])

@@ -1,19 +1,53 @@
-<!DOCTYPE html>
 {% extends "layout.html" %}
 
 {% block content %}
-
-<h1>Enlaces</h1>
-<ul>
-    <li>  
-        <a href="https://signin.cloudbeds.com/" target="_blank">PMS</a>
-    </li>
-    <li> 
-        <a href="https://us2.cloudbeds.com/reservation/GZ8eAy" target="_blank">Motor de Reserva</a> 
-    </li>
-    <li>
-        <a href="https://www.hotelesperanzaac.com" target="_blank"> Página Web</a>
-    </li>
-</ul>
-
-{% endblock%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario de Productos</title>
+    <style>
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Inventario de Productos</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Categoría</th>
+                <!--th>Imagen</th-->
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr>
+                <td>{{ producto[0] }}</td>  <!-- ID del producto -->
+                <td>{{ producto[1] }}</td>  <!-- Nombre del producto -->
+                <td>{{ producto[2] }}</td>  <!-- Descripción del producto -->
+                <td>{{ producto[3] }}</td>  <!-- Precio del producto -->
+                <td>{{ producto[4] }}</td>  <!-- Categoría del producto -->
+                <!--td><img src="{{ producto[5] }}" alt="Imagen del producto" style="max-width: 100px;"></td-->  <!-- Imagen del producto -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
+{% endblock %}
