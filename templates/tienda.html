@@ -23,50 +23,151 @@
             <div class="card-body">
                 <h1 class="text-center text-primary" > Inventario de Productos</h1> 
                 <div class="row mb-3"><h4 style="text-align: center;">Consulta Productos </h4></div>
-                <!-- Tabla de resultados -->
                 <form action="/tienda" method="GET" id="tienda">
                     <div class="row mb-3">
                         <div class="col">
-                            <label>Categoría del producto</label>
-                            <input type="text" class="form-control mb-3" name="Categoria" placeholder="Ingrese la categoría del producto">
+                            <label>Código del producto</label>
+                            <input type="text" class="form-control mb-3" name="Código" placeholder="Ingrese el código del producto">
                         </div>
                         <div class="col">
-                            <button class="btn btn-primary mb-3 mt-4" type="submit">Buscar <i class="fa fa-search"></i></button>
+                            <button class="btn btn-primary mb-3 mt-4" type="submit">Enviar Código</button>
+                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalInventario">Stock</button>
+                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalEditInventario">Editar</button> 
+                            <button type="button" class="btn btn-primary mb-3 mt-4" data-toggle="modal" data-target="#modalEntrada">Entrada</button>
+                            <button type="button" class="btn btn-danger mb-3 mt-4" data-toggle="modal" data-target="#modalSalida">Salida</button> 
                         </div>
                     </div>
                 </form>
-                  <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th scope="col">Id</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Descripción</th>
-                                <th scope="col">Precio</th>
-                                <th scope="col">Categoría</th>
-                                <!--th scope="col">Edit</th>
-                                <th scope="col">Delete</th-->
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% if data_tienda %}
-                            {% for d in data_tienda %}
-                                <tr>
-                                    <td>{{d[0]}}</td>
-                                    <td>{{d[1]}}</td>
-                                    <td>{{d[2]}}</td>
-                                    <td>{{d[3]}}</td>
-                                    <td>{{d[4]}}</td>
-                                    <!--td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
-                                    <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td-->
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                            <tr>
-                                <td colspan="10" class="text-center">No se encontraron resultados</td>
-                            </tr>
-                        {% endif %}
-                        </tbody>
-                </table>                      
+                <!--MODAL INVENTARIO-->
+                <div class="modal fade modal-lg" id="modalInventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Cantidad en Stock</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Código</th>
+                                            <th scope="col">Nombre de Producto</th>
+                                            <th scope="col">Cantidad</th>
+                                            <!--th scope="col">Edit</th>
+                                            <th scope="col">Delete</th-->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% if data_inventario %}
+                                        {% for d in data_inventario %}
+                                            <tr>
+                                                <td>{{d[1]}}</td>
+                                                <td>{{d[2]}}</td>
+                                                <td>{{d[3]}}</td>
+                                                <!--td><button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal{{d[0]}}">Edit </button></td>
+                                                <td><a href="{{url_for('delete_arqueos',id=d[0])}}" class="btn btn-danger btn-sm">Delete</a></td-->
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="10" class="text-center">No se encontraron resultados</td>
+                                        </tr>
+                                    {% endif %}
+                                    </tbody>
+                            </table>                      
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
+                <!--FIN MODAL INVENTARIO-->    
+                <!--MODAL EDITAR INVENTARIO-->
+                <div class="modal fade" id="modalEditInventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="exampleModalLabel">Detalle del producto</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/edit_inventario" method="POST">
+                                    <div class="row mb-3 mt-4">
+                                        <div class="form-group">
+                                            <label>Codigo del producto <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Codigo" placeholder="Codigo del producto" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Nombre<span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Nombre" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Cantidad <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Cantidad" required>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
+                <!--FIN MODAL EDITAR INVENTARIO-->
+                <!-- MODAL ENTRADA -->
+                <div class="modal fade" id="modalEntrada" tabindex="-1" role="dialog" aria-labelledby="modalEntradaLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEntradaLabel">Detalle de la entrada</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form_entrada">
+                                    <div class="form-group">
+                                        <label for="id_entrada">ID del producto:</label>
+                                        <input type="text" class="form-control" id="id_entrada" name="id_entrada" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cantidad_entrada">Cantidad:</label>
+                                        <input type="number" class="form-control" id="cantidad_entrada" name="cantidad_entrada" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN MODAL ENTRADA -->
+
+                <!-- MODAL SALIDA -->
+                <div class="modal fade" id="modalSalida" tabindex="-1" role="dialog" aria-labelledby="modalSalidaLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalSalidaLabel">Detalle de la salida</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="form_salida">
+                                    <div class="form-group">
+                                        <label for="id_salida">ID del producto:</label>
+                                        <input type="text" class="form-control" id="id_salida" name="id_salida" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cantidad_salida">Cantidad:</label>
+                                        <input type="number" class="form-control" id="cantidad_salida" name="cantidad_salida" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger">Guardar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--FIN MODAL SALIDA-->
             </div>
         </div>
     </div>            
@@ -94,17 +195,70 @@ function convertSelection() {
         
 </script>
 <script>
+    function toggleMethod() {
+        var form_get = document.getElementById('tienda');
+        var form_post = document.getElementById('tienda_post');
 
-    document.getElementById("myButton").addEventListener("click", function(event) {
-        // Prevenir el envío del formulario
-        event.preventDefault();
-        
-        // Mostrar la alerta
-        alert("Para confirmar la apertura del turno. Haga clic en aceptar.");
-        
-        // Después de que el usuario hace clic en OK, enviar el formulario
-        document.getElementById("myForm").submit();
+        if (form_get.style.display !== 'none') {
+            form_get.style.display = 'none';
+            form_post.style.display = 'block';
+        } else {
+            form_post.style.display = 'none';
+            form_get.style.display = 'block';
+        }
+    }
+</script>
+<!-- Asegúrate de incluir jQuery antes de tu script -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
+<script>
+    // Manejar formulario de entrada
+    document.getElementById('form_entrada').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el envío del formulario
+
+        let id = document.getElementById('id_entrada').value;
+        let cantidad = document.getElementById('cantidad_entrada').value;
+
+        fetch('/entrada', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id, nuevo_valor: parseInt(cantidad) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#modalEntrada').modal('hide'); // Cerrar el modal usando jQuery
+            document.getElementById('mensaje').textContent = data.mensaje; // Mostrar mensaje de respuesta
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Manejar formulario de salida
+    document.getElementById('form_salida').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el envío del formulario
+
+        let id = document.getElementById('id_salida').value;
+        let cantidad = document.getElementById('cantidad_salida').value;
+
+        fetch('/salida', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: id, nuevo_valor: parseInt(cantidad) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            $('#modalSalida').modal('hide'); // Cerrar el modal usando jQuery
+            document.getElementById('mensaje').textContent = data.mensaje; // Mostrar mensaje de respuesta
+        })
+        .catch(error => console.error('Error:', error));
     });
 </script>
+
 {% endblock%}

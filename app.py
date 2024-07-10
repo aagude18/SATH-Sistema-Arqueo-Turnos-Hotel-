@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
+import subprocess
 import numpy as py
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager, login_user, logout_user, login_required
@@ -50,6 +51,7 @@ def stringAleatorio():
 def listaArchivos():
     urlFiles = 'static/archivos'
     return (os.listdir(urlFiles))
+
 
 csrf = CSRFProtect()
 db = MySQL(app)
@@ -154,6 +156,22 @@ def add_ventas():
         cursor.execute(sql, data_ventas)
         db.connection.commit()
     return redirect(url_for('homee'))
+
+#RUTA PARA AGREGAR VENTA TIENDA
+@app.route('/add_ventas_tienda', methods=['POST'])
+@login_required
+@csrf.exempt
+def add_ventas_tienda():
+    producto_id = request.form['Producto']
+    cantidad = request.form['Cantidad']
+    total = request.form['Total']
+    if producto_id and cantidad and total:
+        cursor = db.connection.cursor()
+        sql = "INSERT INTO ventas_mecato (producto_id, cantidad, total) VALUES (%s, %s, %s)"
+        data_ventas_tienda = (producto_id, cantidad, total)
+        cursor.execute(sql, data_ventas_tienda)
+        db.connection.commit()
+    return redirect(url_for('tienda'))
 
 #RUTA PARA AGREGAR GASTO
 @app.route('/add_gastos', methods=['POST'])
@@ -342,18 +360,7 @@ def edit_gastos(id):
     return redirect(url_for('homee'))
 
 
-#RUTA PARA INVENTARIO 
-@app.route('/tienda', methods=['GET'])
-@login_required
-@csrf.exempt
-def tienda():
-    categoria = request.args.get('Categoria')
-    cur = db.connection.cursor()
-    query = "SELECT * FROM productos WHERE categoria = %s"
-    cur.execute(query, (categoria,))
-    filtered_data = cur.fetchall()
-    cur.close()
-    return render_template('tienda.html', data_tienda=filtered_data)
+
 
 #Creando mi decorador para el home, el cual retornara la Lista de Gastos
 @app.route('/evidencia', methods=['GET','POST'])
@@ -471,8 +478,6 @@ def formViewBorrarGasto():
             return jsonify([0])
 
 
-
-
 def eliminarGasto(id='', nombreFoto=''):
         
     conexion_MySQLdb = connectionBD() #Hago instancia a mi conexion desde la funcion
@@ -491,8 +496,6 @@ def eliminarGasto(id='', nombreFoto=''):
 
     return resultado_eliminar
 
-
-
 def recibeFoto(file):
     print(file)
     basepath = os.path.dirname (__file__) #La ruta donde se encuentra el archivo actual
@@ -508,9 +511,100 @@ def recibeFoto(file):
 
     return nuevoNombreFile
 
-       
-  
-  
+#RUTA PARA INVENTARIO 
+@app.route('/tienda', methods=['GET'])
+@login_required
+@csrf.exempt
+def tienda():
+    codigo = request.args.get('Código')
+    cur = db.connection.cursor()
+    query = "SELECT * FROM inventario WHERE id = %s"
+    cur.execute(query, (codigo,))
+    filtered_data = cur.fetchall()
+    cur.close()
+    return render_template('tienda.html', data_inventario=filtered_data)
+
+#RUTA PARA EDITAR INVENTARIO 
+@app.route('/edit_inventario', methods=['POST'])
+@login_required
+@csrf.exempt
+def edit_inventario():
+    producto_id = request.form['Codigo']
+    nombre = request.form['Nombre']
+    cantidad = request.form['Cantidad']
+    
+    if producto_id and nombre and cantidad:
+        cursor = db.connection.cursor()
+        sql = "UPDATE inventario SET cantidad = %s WHERE id = %s"
+        data = (cantidad, producto_id)  # Asegúrate de pasar los parámetros en el orden correcto
+        cursor.execute(sql, data)
+        db.connection.commit()
+        cursor.close()  # Cierra el cursor después de usarlo
+    
+    return redirect(url_for('tienda'))
+
+# Función genérica para actualizar la cantidad
+def actualizar_cantidad(id_producto, nuevo_valor, operacion):
+    try:
+        cursor = db.connection.cursor()
+        cursor.execute("SELECT cantidad FROM inventario WHERE id = %s", (id_producto,))
+        resultado = cursor.fetchone()
+
+        if resultado:
+            cantidad_actual = resultado[0]
+            if operacion == 'entrada':
+                cantidad_nueva = cantidad_actual + nuevo_valor
+            elif operacion == 'salida':
+                cantidad_nueva = cantidad_actual - nuevo_valor
+            else:
+                return jsonify({"mensaje": "Operación no válida"}), 400
+
+            cursor.execute("UPDATE inventario SET cantidad = %s WHERE id = %s", (cantidad_nueva, id_producto))
+            db.connection.commit()
+
+            return jsonify({"mensaje": f"Cantidad actualizada a {cantidad_nueva}"}), 200
+        else:
+            return jsonify({"mensaje": "Producto no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"mensaje": f"Error de conexión a la base de datos: {e}"}), 500
+    finally:
+        cursor.close()
+
+# Ruta para la entrada de cantidad de productos al inventario
+@app.route('/entrada', methods=['POST'])
+@login_required
+@csrf.exempt
+def entrada_cantidad():
+    try:
+        id_producto = request.json.get('id')
+        nuevo_valor = request.json.get('nuevo_valor')
+
+        if not id_producto or not nuevo_valor:
+            return jsonify({"mensaje": "Faltan datos requeridos"}), 400
+
+        return actualizar_cantidad(id_producto, nuevo_valor, 'entrada')
+
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al procesar la entrada: {e}"}), 500
+
+# Ruta para la salida de cantidad de productos al inventario
+@app.route('/salida', methods=['POST'])
+@login_required
+@csrf.exempt
+def salida_cantidad():
+    try:
+        id_producto = request.json.get('id')
+        nuevo_valor = request.json.get('nuevo_valor')
+
+        if not id_producto or not nuevo_valor:
+            return jsonify({"mensaje": "Faltan datos requeridos"}), 400
+
+        return actualizar_cantidad(id_producto, nuevo_valor, 'salida')
+
+    except Exception as e:
+        return jsonify({"mensaje": f"Error al procesar la salida: {e}"}), 500
+
+
 #Redireccionando cuando la página no existe
 @app.errorhandler(404)
 def not_found(error):
@@ -567,6 +661,7 @@ def status_401(error):
 
 def status_404(error):
     return "<h1>Página no encontrada</h1>", 404
+
 
 if __name__ == '__main__':
     app.config.from_object(config['development'])
