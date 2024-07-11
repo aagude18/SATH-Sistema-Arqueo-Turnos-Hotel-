@@ -524,6 +524,40 @@ def tienda():
     cur.close()
     return render_template('tienda.html', data_inventario=filtered_data)
 
+#RUTA PARA AGREGAR PRODUCTO
+@app.route('/add_producto', methods=['POST'])
+@login_required
+@csrf.exempt
+def add_producto():
+    nombre = request.form['Nombre']
+    descripcion = request.form['Descripcion']
+    precio = request.form['Precio']
+    categoria = request.form['Categoria']
+    if nombre and descripcion and precio and categoria:
+        cursor = db.connection.cursor()
+        sql = "INSERT INTO productos (nombre, descripcion, precio, categoria) VALUES (%s, %s, %s, %s)"
+        data_producto = (nombre, descripcion, precio, categoria)
+        cursor.execute(sql, data_producto)
+        db.connection.commit()
+    return redirect(url_for('tienda'))
+
+#RUTA PARA AGREGAR INVENTARIO
+@app.route('/add_inventario', methods=['POST'])
+@login_required
+@csrf.exempt
+def add_inventario():
+    producto_id = request.form['Producto_Id']
+    nombre = request.form['Nombre']
+    cantidad = request.form['Cantidad']
+    if nombre and producto_id and cantidad:
+        cursor = db.connection.cursor()
+        sql = "INSERT INTO inventario (producto_id, nombre, cantidad) VALUES (%s, %s, %s)"
+        data_inventario = (producto_id, nombre , precio, cantidad)
+        cursor.execute(sql, data_inventario)
+        db.connection.commit()
+    return redirect(url_for('tienda'))
+
+
 #RUTA PARA EDITAR INVENTARIO 
 @app.route('/edit_inventario', methods=['POST'])
 @login_required

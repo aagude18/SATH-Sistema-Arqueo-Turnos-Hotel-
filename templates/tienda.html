@@ -22,22 +22,23 @@
         <div class="card shadow">
             <div class="card-body">
                 <h1 class="text-center text-primary" > Inventario de Productos</h1> 
-                <div class="row mb-3"><h4 style="text-align: center;">Consulta Productos </h4></div>
                 <form action="/tienda" method="GET" id="tienda">
                     <div class="row mb-3">
-                        <div class="col">
+                        <div class="col mt-1">
                             <label>Código del producto</label>
                             <input type="text" class="form-control mb-3" name="Código" placeholder="Ingrese el código del producto">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary mb-3 mt-4" type="submit">Enviar Código</button>
                             <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalInventario">Stock</button>
-                            <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalEditInventario">Editar</button> 
                             <button type="button" class="btn btn-primary mb-3 mt-4" data-toggle="modal" data-target="#modalEntrada">Entrada</button>
                             <button type="button" class="btn btn-danger mb-3 mt-4" data-toggle="modal" data-target="#modalSalida">Salida</button> 
                         </div>
                     </div>
                 </form>
+                <div class="row mb-3"><h4 style="text-align: center;">Agregar Nuevos Productos </h4></div>
+                <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalAddProducto">Producto Nuevo</button>
+                <button class="btn btn-primary mb-3 mt-4" type="button" data-bs-toggle="modal" data-bs-target="#modalEditInventario">Editar Inventario</button>  
                 <!--MODAL INVENTARIO-->
                 <div class="modal fade modal-lg" id="modalInventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -80,6 +81,43 @@
                     </div> 
                 </div> 
                 <!--FIN MODAL INVENTARIO-->    
+                <!--MODAL AGREGAR PRODUCTO-->
+                <div class="modal fade" id="modalAddProducto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="exampleModalLabel">Agregar Producto</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/add_producto" method="POST">
+                                    <div class="row mb-3 mt-4">
+                                        <div class="form-group">
+                                            <label>Nombre <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Nombre" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Descripcion <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Descripcion" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Precio <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Precio" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Categoria <span style="color: red;">*</span></label>
+                                            <input type="text" class="form-control" name="Categoria" required>
+                                        </div>
+                                        <div class="col">
+                                            <button class="btn btn-primary mb-3 mt-4" type="submit">Save </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div> 
+                        </div>
+                    </div> 
+                </div> 
+                <!--FIN MODAL AGREGAR PRODUCTO-->
                 <!--MODAL EDITAR INVENTARIO-->
                 <div class="modal fade" id="modalEditInventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
